@@ -1,10 +1,17 @@
+"use client";
+
+import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 
 export const Navbar = () => {
+  const [menuOpen, setMenuOpen] = useState(false);
+
   const topLinks = [
     { name: "BOCRA Portal", href: "https://op-web.bocra.org.bw" },
     { name: "QOS Monitoring", href: "https://dqos.bocra.org.bw" },
     { name: "Licensing", href: "/licensing" },
+    { name: "Telecom Statistics", href: "/telecom-statistics" },
   ];
 
   const navLinks = [
@@ -19,19 +26,41 @@ export const Navbar = () => {
 
   const logoSrc = "/bocra-logo.png";
 
-  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
-
   return (
-    <nav className="fixed top-0 left-0 right-0 flex flex-col justify-center items-center bg-white/70">
-      <div className="w-full flex flex-row px-6 justify-around space-x-6 bg-pink text-white">
-        <div className="flex items-center justify-center gap-2">
-            <label htmlFor="searchBar">Search BOCRA: </label>
-            <input id="searchBar" type="text" placeholder="Search..." className="border border-white rounded px-2 py-1" />  
+    <nav className="fixed w-full top-0 z-50 flex flex-col bg-white shadow-md">
+      <div className="hidden md:flex w-full flex-row px-6 justify-around items-center bg-pink text-white">
+        <div className="flex items-center justify-center gap-2 py-2">
+          <label htmlFor="searchBar">Search BOCRA:</label>
+          <input
+            id="searchBar"
+            type="text"
+            placeholder="Search..."
+            className="border border-white rounded px-2 py-1 bg-transparent placeholder-white/70 focus:outline-none focus:ring-1 focus:ring-white"
+          />
         </div>
         <div className="flex flex-row px-6 py-2 space-x-6">
           {topLinks.map((link) => (
             <Link
-              className="hover:text-gold transition-colors"
+              className="hover:text-gold transition-colors text-sm"
+              key={link.name}
+              href={link.href}
+              target="_blank"
+            >
+              {link.name}
+            </Link>
+          ))}
+        </div>
+      </div>
+
+      <div className="w-full flex flex-row justify-between items-center px-6 py-2">
+        <Link href="/">
+          <Image src={logoSrc} alt="BOCRA Logo" width={100} height={100} />
+        </Link>
+
+        <div className="hidden md:flex items-center space-x-7 text-turquoise">
+          {navLinks.map((link) => (
+            <Link
+              className="hover:text-pink transition-colors text-sm font-medium"
               key={link.name}
               href={link.href}
             >
@@ -39,28 +68,70 @@ export const Navbar = () => {
             </Link>
           ))}
         </div>
+
+        <button
+          className="md:hidden flex flex-col justify-center items-center gap-1.5 p-2 text-turquoise"
+          onClick={() => setMenuOpen((prev) => !prev)}
+          aria-label="Toggle menu"
+          aria-expanded={menuOpen}
+        >
+          <span
+            className={`block h-0.5 w-6 bg-current transition-transform duration-300 ${
+              menuOpen ? "translate-y-2 rotate-45" : ""
+            }`}
+          />
+          <span
+            className={`block h-0.5 w-6 bg-current transition-opacity duration-300 ${
+              menuOpen ? "opacity-0" : ""
+            }`}
+          />
+          <span
+            className={`block h-0.5 w-6 bg-current transition-transform duration-300 ${
+              menuOpen ? "-translate-y-2 -rotate-45" : ""
+            }`}
+          />
+        </button>
       </div>
-      <div className="w-full flex flex-row justify-between items-center px-6 py-2">
-        <div className="flex items-center justify-center">
-          <img src={logoSrc} alt="BOCRA Logo" width={100} height={100} />
-        </div>
-        {isMobile ? (
-          <div className="flex items-center justify-center">
-            <button>MENU</button>
-          </div>
-        ) : (
-          <div className="flex items-center justify-center space-x-7 text-turquoise">
-            {navLinks.map((link) => (
+
+      <div
+        className={`md:hidden space-y-3 overflow-hidden transition-all duration-500 ${
+          menuOpen ? "max-h-screen py-4" : "max-h-0"
+        }`}
+      >
+        <div className="flex flex-col px-6 space-y-3 text-turquoise">
+          {navLinks.map((link) => (
+            <Link
+              className="hover:text-pink transition-colors py-1 font-medium"
+              key={link.name}
+              href={link.href}
+              onClick={() => setMenuOpen(false)}
+            >
+              {link.name}
+            </Link>
+          ))}
+
+          <div className="flex flex-col space-y-3 text-pink">
+            {topLinks.map((link) => (
               <Link
-                className="hover:text-pink transition-colors"
+                className="text-md"
                 key={link.name}
                 href={link.href}
+                target="_blank"
+                onClick={() => setMenuOpen(false)}
               >
                 {link.name}
               </Link>
             ))}
           </div>
-        )}
+
+          <div className="py-2">
+            <input
+              type="search"
+              placeholder="Search BOCRA..."
+              className="w-full border border-black rounded px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-turquoise"
+            />
+          </div>
+        </div>
       </div>
     </nav>
   );
