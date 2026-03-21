@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
-import { Poppins } from "next/font/google";
+import { Instrument_Sans, Inter } from "next/font/google";
 import "./globals.css";
+import { cn } from "@/lib/utils";
 
-const poppins = Poppins({
+const inter = Inter({subsets:['latin'],variable:'--font-sans'});
+
+const poppins = Instrument_Sans({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
   fallback: ["system-ui", "arial"],
@@ -20,7 +23,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${poppins.className} antialiased`}>
+    <html lang="en" className={cn("antialiased", poppins.className, "font-sans", inter.variable)}>
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );
