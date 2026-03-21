@@ -1,5 +1,6 @@
 "use client";
 
+import { CellTowerIcon, MagnifyingGlassIcon } from "@phosphor-icons/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
@@ -11,7 +12,11 @@ export const Navbar = () => {
     { name: "BOCRA Portal", href: "https://op-web.bocra.org.bw" },
     { name: "QOS Monitoring", href: "https://dqos.bocra.org.bw" },
     { name: "Licensing", href: "/licensing" },
-    { name: "Telecom Statistics", href: "/telecom-statistics" },
+    {
+      name: "Telecom Statistics",
+      href: "/telecom-statistics",
+      icon: <CellTowerIcon />,
+    },
   ];
 
   const navLinks = [
@@ -31,22 +36,26 @@ export const Navbar = () => {
       <div className="hidden md:flex w-full flex-row px-6 justify-around items-center bg-pink text-white">
         <div className="flex items-center justify-center gap-2 py-2">
           <label htmlFor="searchBar">Search BOCRA:</label>
-          <input
-            id="searchBar"
-            type="text"
-            placeholder="Search..."
-            className="border border-white rounded px-2 py-1 bg-transparent placeholder-white/70 focus:outline-none focus:ring-1 focus:ring-white"
-          />
+          <div className="flex flex-row p-0 px-2 m-0 items-center border">
+            <MagnifyingGlassIcon />
+            <input
+              id="searchBar"
+              type="text"
+              placeholder="search..."
+              className="rounded px-2 py-1 bg-transparent placeholder-white/70"
+            />
+          </div>
         </div>
         <div className="flex flex-row px-6 py-2 space-x-6">
           {topLinks.map((link) => (
             <Link
-              className="hover:text-gold transition-colors text-sm"
+              className="hover:text-gold transition-colors text-sm flex flex-row items-center gap-1"
               key={link.name}
               href={link.href}
               target="_blank"
             >
               {link.name}
+              {link.icon && link.icon}
             </Link>
           ))}
         </div>
@@ -113,13 +122,14 @@ export const Navbar = () => {
           <div className="flex flex-col space-y-3 text-pink">
             {topLinks.map((link) => (
               <Link
-                className="text-md"
+                className="text-md flex items-center gap-1"
                 key={link.name}
                 href={link.href}
                 target="_blank"
                 onClick={() => setMenuOpen(false)}
               >
                 {link.name}
+                {link.icon && link.icon}
               </Link>
             ))}
           </div>
