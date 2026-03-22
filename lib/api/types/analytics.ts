@@ -73,9 +73,9 @@ export type StaffDashboard = {
     by_priority: Record<string, number>;
   };
   content: {
-    publications: number;
-    tenders: number;
-    news: number;
+    publications: { total: number; published: number; draft: number; archived?: number };
+    tenders: { total: number; draft: number; open: number; closed?: number; awarded?: number; cancelled?: number };
+    news: { total: number; published: number; draft: number; archived?: number };
   };
 };
 

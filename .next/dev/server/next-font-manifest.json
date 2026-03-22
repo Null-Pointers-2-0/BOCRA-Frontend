@@ -7,6 +7,14 @@
     "[project]/app/page": [
       "static/media/83afe278b6a6bb3c-s.p.0q-301v4kxxnr.woff2",
       "static/media/f06bf9da926bae75.p.0pz0x0eczp58u.woff2"
+    ],
+    "[project]/app/test-dashboard/page": [
+      "static/media/83afe278b6a6bb3c-s.p.0q-301v4kxxnr.woff2",
+      "static/media/f06bf9da926bae75.p.0pz0x0eczp58u.woff2"
+    ],
+    "[project]/app/test-login/page": [
+      "static/media/83afe278b6a6bb3c-s.p.0q-301v4kxxnr.woff2",
+      "static/media/f06bf9da926bae75.p.0pz0x0eczp58u.woff2"
     ]
   },
   "appUsingSizeAdjust": true,

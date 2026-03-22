@@ -27,8 +27,8 @@ export async function login(
     method: "POST",
     body: data,
   });
-  if (res.success && res.data?.tokens) {
-    setTokens(res.data.tokens.access, res.data.tokens.refresh);
+  if (res.success && res.data?.access) {
+    setTokens(res.data.access, res.data.refresh);
   }
   return res;
 }
