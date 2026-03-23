@@ -1,0 +1,9 @@
+export * as adminAuth from "./auth";
+export * as adminUsers from "./users";
+export * as adminLicensing from "./licensing";
+export * as adminComplaints from "./complaints";
+export * as adminPublications from "./publications";
+export * as adminTenders from "./tenders";
+export * as adminNews from "./news";
+export * as adminAnalytics from "./analytics";
+export * as adminNotifications from "./notifications";
