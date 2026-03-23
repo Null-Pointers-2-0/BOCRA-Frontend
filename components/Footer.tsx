@@ -45,7 +45,7 @@ export const Footer = () => {
         </a>
       </div>
       <div className="flex flex-col space-y-2 h-full w-full">
-        <h1 className="text-3xl font-bold">QUICK LINKS</h1>
+        <h1 className="text-2xl font-semibold">Quick Links</h1>
         <Link href={"/tarrifs"} className="text-xl underline">
           Tarrifs
         </Link>
@@ -59,7 +59,7 @@ export const Footer = () => {
           Terms of Service and Privacy Policy
         </Link>
         <div className="flex flex-col space-y-2">
-          <h1 className="text-3xl font-bold">SOCIALS</h1>
+          <h1 className="text-2xl font-semibold">Socials</h1>
           <div className="flex flex-row items-center gap-5 text-xl">
             <Link href={"#"}>
               <InstagramLogoIcon />
