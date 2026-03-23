@@ -19,6 +19,11 @@ export const Navbar = () => {
     },
   ];
 
+  const extraTopLinks = [
+    { name: "Register BW", href: "https://nic.net.bw" },
+    { name: "Type Approval", href: "https://typeapproval.bocra.org.bw" },
+  ];
+
   const navLinks = [
     { name: "About", href: "/about" },
     { name: "Mandate", href: "/mandate" },
@@ -29,11 +34,22 @@ export const Navbar = () => {
     { name: "Tenders", href: "/tenders" },
   ];
 
+  const extraNavLinks = [
+    {
+      name: "ASMS-WebCP",
+      href: "https://registration.bocra.org.bw",
+    },
+    {
+      name: "License Verification",
+      href: "https://customerportal.bocra.org.bw/OnlineLicenseVerification/verify",
+    },
+  ];
+
   const logoSrc = "/bocra-logo.png";
 
   return (
     <nav className="fixed w-full top-0 z-50 flex flex-col bg-white shadow-md">
-      <div className="hidden md:flex w-full flex-row px-6 justify-around items-center bg-pink text-white">
+      <div className="hidden md:flex w-full flex-row px-6 justify-evenly items-center bg-pink text-white">
         <div className="flex items-center justify-center gap-2 py-2">
           <label htmlFor="searchBar">Search BOCRA:</label>
           <div className="flex flex-row p-0 px-2 m-0 items-center border">
@@ -52,16 +68,24 @@ export const Navbar = () => {
               className="hover:text-gold transition-colors text-sm flex flex-row items-center gap-1"
               key={link.name}
               href={link.href}
-              target="_blank"
             >
               {link.name}
               {link.icon && link.icon}
             </Link>
           ))}
+          {extraTopLinks.map((link) => (
+            <Link
+              className="hover:text-gold transition-colors text-sm flex flex-row items-center gap-1 bg-dark-teal text-white px-2 py-1"
+              key={link.name}
+              href={link.href}
+            >
+              {link.name}
+            </Link>
+          ))}
         </div>
       </div>
 
-      <div className="w-full flex flex-row justify-between items-center px-6 py-2">
+      <div className="w-full flex flex-row justify-between md:justify-evenly items-center px-6 py-2">
         <Link href="/">
           <Image src={logoSrc} alt="BOCRA Logo" width={100} height={100} />
         </Link>
@@ -70,6 +94,18 @@ export const Navbar = () => {
           {navLinks.map((link) => (
             <Link
               className="hover:text-pink transition-colors text-sm font-medium"
+              key={link.name}
+              href={link.href}
+            >
+              {link.name}
+            </Link>
+          ))}
+        </div>
+
+        <div className="hidden md:flex md:items-center space-x-4 text-turquoise">
+          {extraNavLinks.map((link) => (
+            <Link
+              className="transition-colors text-sm font-medium bg-turquoise text-white px-3 py-1"
               key={link.name}
               href={link.href}
             >

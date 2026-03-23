@@ -86,7 +86,41 @@ export default function Complaints() {
       against_operator_name: "Orange",
       category: "BILLING",
       subject: "Billing Problems",
-      description: "They charge way too much",
+      description:
+        "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).",
+      priority: "HIGH",
+    },
+    {
+      complaint_name: "Kitso Thebe",
+      complaint_email: "kitsothebe@gmail.com",
+      complaint_phone: "+267 71234567",
+      against_operator_name: "Orange",
+      category: "BILLING",
+      subject: "Billing Problems",
+      description:
+        "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).",
+      priority: "HIGH",
+    },
+    {
+      complaint_name: "Kitso Thebe",
+      complaint_email: "kitsothebe@gmail.com",
+      complaint_phone: "+267 71234567",
+      against_operator_name: "Orange",
+      category: "BILLING",
+      subject: "Billing Problems",
+      description:
+        "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).",
+      priority: "HIGH",
+    },
+    {
+      complaint_name: "Kitso Thebe",
+      complaint_email: "kitsothebe@gmail.com",
+      complaint_phone: "+267 71234567",
+      against_operator_name: "Orange",
+      category: "BILLING",
+      subject: "Billing Problems",
+      description:
+        "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).",
       priority: "HIGH",
     },
   ];
@@ -94,12 +128,12 @@ export default function Complaints() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen flex flex-col justify-center items-center px-6">
-        <div className="flex flex-col items-center justify-center space-y-2 mt-30">
+      <main className="min-h-screen flex flex-col px-6">
+        <div className="flex flex-col space-y-4 mt-20 md:mt-30">
           <h1 className="text-3xl font-semibold">File a complaint</h1>
           <form
             onSubmit={handleSubmit}
-            className="bg-gray-50 border border-gray-400 p-6 grid grid-cols-1 md:grid-cols-2 gap-5"
+            className="bg-gray-50 border border-gray-400 p-4 grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl"
           >
             <div>
               <label htmlFor="name" className="font-medium text-lg">
@@ -110,6 +144,7 @@ export default function Complaints() {
                 type="text"
                 placeholder="Kitso Thebe..."
                 autoComplete="true"
+                required
                 value={formData.complaint_name}
                 onChange={(e) =>
                   handleInputChange("complaint_name", e.target.value)
@@ -125,6 +160,7 @@ export default function Complaints() {
                 type="text"
                 placeholder="example@gmail.com"
                 autoComplete="true"
+                required
                 value={formData.complaint_email}
                 onChange={(e) =>
                   handleInputChange("complaint_email", e.target.value)
@@ -133,7 +169,7 @@ export default function Complaints() {
             </div>
             <div>
               <label htmlFor="phoneNumber" className="font-medium text-lg">
-                Enter phone number <span className="text-pink">*</span>
+                Enter phone number
               </label>
               <Input
                 id="phoneNumber"
@@ -157,6 +193,7 @@ export default function Complaints() {
                 <ComboboxInput
                   placeholder="Select operator..."
                   showClear={true}
+                  required
                 />
                 <ComboboxContent>
                   <ComboboxList>
@@ -184,6 +221,7 @@ export default function Complaints() {
                 <ComboboxInput
                   placeholder="Select a category..."
                   showClear={true}
+                  required
                 />
                 <ComboboxContent>
                   <ComboboxList>
@@ -208,6 +246,7 @@ export default function Complaints() {
                 <ComboboxInput
                   placeholder="Select priority..."
                   showClear={true}
+                  required
                 />
                 <ComboboxContent>
                   <ComboboxList>
@@ -228,6 +267,7 @@ export default function Complaints() {
                 id="subject"
                 type="text"
                 placeholder="Brief description of your complaint..."
+                required
                 value={formData.subject}
                 onChange={(e) => handleInputChange("subject", e.target.value)}
               />
@@ -241,6 +281,7 @@ export default function Complaints() {
                 placeholder="Please provide detailed information about your complaint..."
                 className="border border-gray-400"
                 rows={6}
+                required
                 value={formData.description}
                 onChange={(e) =>
                   handleInputChange("description", e.target.value)
@@ -250,14 +291,14 @@ export default function Complaints() {
             <div className="md:col-span-2">
               <Button
                 type="submit"
-                className="w-full hover:bg-turquoise/90 hover:cursor-pointer bg-turquoise text-white text-lg font-medium py-6"
+                className="w-full hover:bg-turquoise/90 hover:cursor-pointer bg-turquoise text-white text-lg font-medium py-5"
               >
                 Submit Complaint
               </Button>
             </div>
           </form>
-        <section className="w-full max-w-4xl">
-          <h2 className="text-2xl font-semibold mb-6">Recent Complaints</h2>
+        <section className="w-full max-w-4xl space-y-4">
+          <h2 className="text-2xl font-semibold">Recent Complaints</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {complaintsExample.map((complaint, index) => (
               <ComplaintsCard key={index} complaint={complaint} />
