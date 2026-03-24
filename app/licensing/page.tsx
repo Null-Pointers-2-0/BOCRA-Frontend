@@ -12,7 +12,7 @@ export default function LicensingPage() {
         <div className="max-w-5xl space-y-5">
           <h1 className="text-3xl font-semibold w-full flex justify-between items-center">
             Licensing
-            <button className="bg-dark-teal text-white px-6 py-2 md:px-8 md:py-3 text-base">
+            <button className="bg-dark-teal text-white px-3 py-1 md:px-6 md:py-2 text-base">
               <Link href="/apply-for-license">Apply for License</Link>
             </button>
           </h1>
@@ -110,9 +110,6 @@ export default function LicensingPage() {
             provides for postal operators which provide value-added services.
           </p>
         </div>
-        <button className="bg-dark-teal w-full md:w-auto text-white px-4 py-2">
-          <Link href="/apply-for-license">Apply for License</Link>
-        </button>
       </div>
       <Footer />
     </main>
