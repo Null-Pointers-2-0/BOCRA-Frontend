@@ -16,17 +16,10 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 
 export default function Complaints() {
-  const complaintsCategories = [
-    "SERVICE_QUALITY",
-    "BILLING",
-    "COVERAGE",
-    "CONDUCT",
-    "INTERNET",
-    "BROADCASTING",
-    "POSTAL",
-    "OTHER",
-  ];
+  const complaintsCategories = [ "SERVICE_QUALITY", "BILLING", "COVERAGE", "CONDUCT", "INTERNET", "BROADCASTING", "POSTAL", "OTHER", ];
+
   const priorities = ["LOW", "MEDIUM", "HIGH"];
+
   const operators = [
     "Mascom",
     "Orange",
@@ -128,7 +121,7 @@ export default function Complaints() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen flex flex-col px-6">
+      <main className="min-h-screen md:justify-center md:items-center flex flex-col px-6">
         <div className="flex flex-col space-y-4 mt-20 md:mt-30">
           <h1 className="text-3xl font-semibold">File a complaint</h1>
           <form

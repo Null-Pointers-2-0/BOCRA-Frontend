@@ -9,22 +9,10 @@ import Link from "next/link";
 export default function Home() {
   const newsAndEvents = [
     { title: "PUBLIC NOTICE - BOCRA WEBSITE DEVELOPMENT HACKATHON" },
-    {
-      title:
-        "PRESS RELEASE - BOTSWANA COLLABORATES WITH FIVE SADC MEMBER STATES TO SUBSTANTIALLY REDUCE AND HARMONISE INTERNATIONAL ROAMING TARIFFS",
-    },
-    {
-      title:
-        "MEDIA RELEASE - BOCRA Approves Reduced Data Prices for Botswana Telecommunications Corporation (BTC)",
-    },
-    {
-      title:
-        "PUBLIC NOTICE - EXPRESSION OF INTEREST (EOI) FOR INCLUSION IN THE BOTSWANA COMMUNICATIONS REGULATORY AUTHORITY'S SUPPLIER DATABASE",
-    },
-    {
-      title:
-        "PUBLIC NOTICE - ITA Commercial Broadcasting Radio Station Licence",
-    },
+    { title: "PRESS RELEASE - BOTSWANA COLLABORATES WITH FIVE SADC MEMBER STATES TO SUBSTANTIALLY REDUCE AND HARMONISE INTERNATIONAL ROAMING TARIFFS", },
+    { title: "MEDIA RELEASE - BOCRA Approves Reduced Data Prices for Botswana Telecommunications Corporation (BTC)", },
+    { title: "PUBLIC NOTICE - EXPRESSION OF INTEREST (EOI) FOR INCLUSION IN THE BOTSWANA COMMUNICATIONS REGULATORY AUTHORITY'S SUPPLIER DATABASE", },
+    { title: "PUBLIC NOTICE - ITA Commercial Broadcasting Radio Station Licence", },
   ];
 
   const documentsAndLegislation = [
@@ -39,19 +27,10 @@ export default function Home() {
     { title: "Amateur Radio License", href: "/licenses/amateur-radio" },
     { title: "Broadcasting License", href: "/licenses/broadcasting" },
     { title: "Cellular License", href: "/licenses/cellular" },
-    {
-      title: "Citizen Band Radio License",
-      href: "/licenses/citizen-band-radio",
-    },
-    {
-      title: "Point-to-Multipoint License",
-      href: "/licenses/point-to-multipoint",
-    },
+    { title: "Citizen Band Radio License", href: "/licenses/citizen-band-radio", },
+    { title: "Point-to-Multipoint License", href: "/licenses/point-to-multipoint", },
     { title: "Point-to-Point License", href: "/licenses/point-to-point" },
-    {
-      title: "Private Radio Communication License",
-      href: "/licenses/private-radio-communication",
-    },
+    { title: "Private Radio Communication License", href: "/licenses/private-radio-communication", },
     { title: "Radio Dealers License", href: "/licenses/radio-dealers" },
     { title: "Radio Frequency License", href: "/licenses/radio-frequency" },
     { title: "Satellite Service License", href: "/licenses/satellite-service" },
@@ -101,7 +80,6 @@ export default function Home() {
         </section>
         <section className="bg-turquoise md:bg-[url('/about-background.jpeg')] bg-cover bg-center bg-no-repeat flex flex-col justify-start items-start md:justify-end md:items-end space-y-5 py-10 md:py-20 px-6 w-full text-white text-left">
           <div className="flex items-center gap-2 md:w-3xl">
-            <InfoIcon className="text-3xl md:text-5xl" />
             <h2 className="text-3xl md:text-5xl font-semibold">About BOCRA</h2>
           </div>
           <p className="max-w-3xl text-lg leading-loose">
@@ -188,7 +166,7 @@ export default function Home() {
         <section className="flex flex-col md:justify-center md:items-center px-6 space-y-5 py-10">
           <h1 className="text-3xl md:text-5xl font-semibold">Filing Complaints</h1>
           <main className="grid grid-cols-1 md:grid-cols-3 justify-center gap-5 items-center w-full">
-            <div className="w-full h-full space-y-5 border-l-2 md:border-l-0 md:border-r-2 p-6 md:p-0">
+            <div className="w-full h-full space-y-5 border-l-2 border-black md:border-l-0 md:border-r-2 p-4 md:p-0">
               <h2 className="text-2xl font-bold">Complaints Process</h2>
               <p>
                 BOCRA will investigate a consumer complaint against a service
@@ -196,7 +174,7 @@ export default function Home() {
                 facie case on possible breaches of any provisions under
               </p>
             </div>
-            <div className="w-full h-full space-y-5 border-l-2 md:border-l-0 md:border-r-2 p-6 md:p-0">
+            <div className="w-full h-full space-y-5 border-l-2 border-black md:border-l-0 md:border-r-2 p-4 md:p-0">
               <h2 className="text-xl font-bold">Tools</h2>
               <p>
                 In the discharge of its mandate, BOCRA, in consultation with
@@ -205,7 +183,7 @@ export default function Home() {
                 consumers and other stakeholders on regulatory expectations.
               </p>
             </div>
-            <div className="w-full h-full space-y-5 border-l-2 p-6 md:border-none md:p-0">
+            <div className="w-full h-full space-y-5 border-l-2 border-black p-4 md:border-none md:p-0">
               <h2 className="text-2xl font-bold">Complaint Status</h2>
               <p>
                 BOCRA will keep you updated on the status of your complaint and

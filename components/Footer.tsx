@@ -46,21 +46,21 @@ export const Footer = () => {
       </div>
       <div className="flex flex-col space-y-2 h-full w-full">
         <h1 className="text-2xl font-semibold">Quick Links</h1>
-        <Link href={"/tarrifs"} className="text-xl underline">
+        <Link href={"/tarrifs"} className="text-xl underline text-pink">
           Tarrifs
         </Link>
-        <Link href={"/faqs"} className="text-xl underline">
+        <Link href={"/faqs"} className="text-xl underline text-pink">
           FAQs
         </Link>
-        <Link href={"/links"} className="text-xl underline">
+        <Link href={"/links"} className="text-xl underline text-pink">
           Links
         </Link>
-        <Link href={"/tos-and-privacy-policy"} className="text-xl underline">
+        <Link href={"/tos-and-privacy-policy"} className="text-xl underline text-pink">
           Terms of Service and Privacy Policy
         </Link>
         <div className="flex flex-col space-y-2">
           <h1 className="text-2xl font-semibold">Socials</h1>
-          <div className="flex flex-row items-center gap-5 text-xl">
+          <div className="flex flex-row items-center gap-5 text-2xl">
             <Link href={"#"}>
               <InstagramLogoIcon />
             </Link>
