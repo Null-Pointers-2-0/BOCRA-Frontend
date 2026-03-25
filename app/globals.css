@@ -2,23 +2,20 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
-/* Custom variant for dark theme - handled by Tailwind CSS */
+@custom-variant dark (&:is(.dark *));
 
 :root {
   --turquoise: #0073ae;
   --dark-teal: #008265;
   --pink: #c60751;
   --gold: #ffd204;
-  --primary: #0073a8; /* Telecommunications Blue */
-  --broadcasting: #008469; /* Broadcasting Green */
-  --postal: #c4124c; /* Postal Red/Pink */
-  --internet: #ffc107; /* Internet Yellow */
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
   --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
@@ -46,18 +43,13 @@
   --sidebar-ring: oklch(0.708 0 0);
 }
 
-/* Theme variables - handled by Tailwind CSS */
-:root {
+@theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-turquoise: var(--turquoise);
   --color-dark-teal: var(--dark-teal);
   --color-pink: var(--pink);
   --color-gold: var(--gold);
-  --color-primary: var(--primary);
-  --color-broadcasting: var(--broadcasting);
-  --color-postal: var(--postal);
-  --color-internet: var(--internet);
   --font-heading: var(--font-sans);
   --font-sans: var(--font-sans);
   --color-sidebar-ring: var(--sidebar-ring);
@@ -95,7 +87,7 @@
   --radius-xl: calc(var(--radius) * 1.4);
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
+  --radius-4xl: calc(var(--radius) * 2.6);  
 }
 
 /* @media (prefers-color-scheme: dark) {
@@ -139,16 +131,14 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
-/* Base styles - converted from @apply directives */
-* {
-  border-color: var(--border);
-  outline-color: var(--ring);
-  outline-offset: 2px;
-}
-body {
-  background-color: var(--background);
-  color: var(--foreground);
-}
-html {
-  font-family: var(--font-sans);
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
 }
