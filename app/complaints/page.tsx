@@ -290,6 +290,7 @@ export default function Complaints() {
               </Button>
             </div>
           </form>
+        </div>
         <section className="w-full max-w-4xl space-y-4">
           <h2 className="text-2xl font-semibold">Recent Complaints</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -298,7 +299,6 @@ export default function Complaints() {
             ))}
           </div>
         </section>
-        </div>
       </main>
       <Footer />
     </>
