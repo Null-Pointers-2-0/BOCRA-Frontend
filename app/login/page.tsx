@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { adminAuth } from "@/lib/api/admin";
 
-export default function TestLoginPage() {
+export default function Login() {
   const router = useRouter();
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
@@ -29,7 +29,11 @@ export default function TestLoginPage() {
         setError(res.message || "Login failed");
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Network error — is the backend running?");
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Network error — is the backend running?",
+      );
     } finally {
       setLoading(false);
     }
@@ -39,15 +43,20 @@ export default function TestLoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
       <div className="w-full max-w-md space-y-6">
         <div className="text-center">
-          <h1 className="text-2xl font-bold">Test Login</h1>
-          <p className="text-sm text-gray-500 mt-1">
-            Backend: {process.env.NEXT_PUBLIC_API_URL}
-          </p>
+          <h1 className="text-2xl font-bold">Login</h1>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4 bg-white p-6 rounded-lg shadow">
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-4 bg-white p-6 rounded-lg shadow"
+        >
           <div>
-            <label htmlFor="emailOrUsername" className="block text-sm font-medium mb-1">Email or Username <span className="text-pink">*</span></label>
+            <label
+              htmlFor="emailOrUsername"
+              className="block text-sm font-medium mb-1"
+            >
+              Email or Username <span className="text-pink">*</span>
+            </label>
             <input
               id="emailOrUsername"
               type="text"
@@ -60,7 +69,12 @@ export default function TestLoginPage() {
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium mb-1">Password <span className="text-pink">*</span></label>
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium mb-1"
+            >
+              Password <span className="text-pink">*</span>
+            </label>
             <input
               id="password"
               type="password"
@@ -82,7 +96,9 @@ export default function TestLoginPage() {
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
                 Logging in...
               </div>
-            ) : "Login"}
+            ) : (
+              "Login"
+            )}
           </button>
         </form>
 

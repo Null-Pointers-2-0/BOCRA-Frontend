@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-export default function TestSignup() {
+export default function Signup() {
   const [formData, setFormData] = useState({
     first_name: "",
     last_name: "",
@@ -15,42 +15,126 @@ export default function TestSignup() {
   });
 
   const [passwordError, setPasswordError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [submitError, setSubmitError] = useState("");
+  const [submitSuccess, setSubmitSuccess] = useState(false);
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     if (field === "password" || field === "confirm_password") {
       setPasswordError("");
     }
+
+    if (submitError) setSubmitError("");
+    if (submitSuccess) setSubmitSuccess(false);
   };
 
-  const handleSubmit = (e: React.SubmitEvent) => {
+  const handleSubmit = async (e: React.SubmitEvent) => {
     e.preventDefault();
-    
+
     if (formData.password !== formData.confirm_password) {
       setPasswordError("Passwords do not match");
       return;
     }
-    
+
     setPasswordError("");
-    console.log("Form submitted:", formData);
+    setSubmitError("");
+    setIsLoading(true);
+
+    try {
+      const payload = {
+        first_name: formData.first_name,
+        last_name: formData.last_name,
+        username: formData.username,
+        email: formData.email,
+        password: formData.password,
+        confirm_password: formData.confirm_password,
+        phone_number: formData.phone_number,
+        id_number: formData.id_number,
+      };
+
+      console.log("Sending payload:", payload);
+
+      const response = await fetch(
+        "https://bocra-backend.mooo.com/api/v1/accounts/register/",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        },
+      );
+
+      console.log("Response status:", response.status);
+      console.log("Response headers:", response.headers);
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Error response:", errorText);
+
+        let errorData;
+        try {
+          errorData = JSON.parse(errorText);
+        } catch {
+          errorData = { message: errorText };
+        }
+
+        throw new Error(
+          errorData.message ||
+            errorData.detail ||
+            `HTTP error! status: ${response.status}`,
+        );
+      }
+
+      const data = await response.json();
+      console.log("Signup successful:", data);
+      setSubmitSuccess(true);
+
+      setFormData({
+        first_name: "",
+        last_name: "",
+        username: "",
+        email: "",
+        password: "",
+        confirm_password: "",
+        phone_number: "",
+        id_number: "",
+      });
+    } catch (error) {
+      console.error("Signup error:", error);
+      setSubmitError(
+        error instanceof Error
+          ? error.message
+          : "An error occurred during signup",
+      );
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const signupExample = [
-    {
-      first_name: "John",
-      last_name: "Smith",
-      username: "jsmith",
-      email: "user@example.com",
-      password: "SecurePass123!",
-      confirm_password: "SecurePass123!",
-      phone_number: "+26771234567",
-      id_number: "123456789",
-    },
-  ];
-
   return (
-    <div className="min-h-screen w-full py-10 flex flex-col justify-center items-center space-y-5 px-6">
-      <h1 className="text-3xl font-bold">Test Signup</h1>
+    <div className="min-h-screen w-full py-10 flex flex-col md:justify-center md:items-center space-y-5 px-6">
+      <h1 className="text-3xl font-bold">Signup</h1>
+
+      {/* Success Message */}
+      {submitSuccess && (
+        <div className="w-full max-w-2xl p-4 bg-green-100 border border-green-400 text-green-700 rounded">
+          <p className="font-semibold">Account created successfully!</p>
+          <p className="text-sm">
+            Your account has been created. You can now log in.
+          </p>
+        </div>
+      )}
+
+      {/* Error Message */}
+      {submitError && (
+        <div className="w-full max-w-2xl p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+          <p className="font-semibold">Error:</p>
+          <p className="text-sm">{submitError}</p>
+        </div>
+      )}
+
       <form
         onSubmit={handleSubmit}
         className="w-full grid grid-cols-1 md:grid-cols-2 max-w-2xl p-4 bg-gray-50 gap-4 border border-gray-500"
@@ -182,9 +266,17 @@ export default function TestSignup() {
 
         <button
           type="submit"
-          className="col-span-1 md:col-span-2 w-full bg-turquoise text-white py-2"
+          disabled={isLoading}
+          className="col-span-1 md:col-span-2 w-full bg-turquoise text-white py-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
-          Sign Up
+          {isLoading ? (
+            <>
+              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+              Creating Account...
+            </>
+          ) : (
+            "Sign Up"
+          )}
         </button>
       </form>
     </div>
