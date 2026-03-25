@@ -68,6 +68,7 @@ const navItems: NavItem[] = [
       { name: "Board of Directors", href: "/board-of-directors" },
       { name: "Executive Management", href: "/executive-management" },
       { name: "Careers", href: "/careers" },
+      { name: "Projects", href: "/projects" },
       // Mandate is nested inside About
       {
         name: "Mandate",
@@ -83,7 +84,6 @@ const navItems: NavItem[] = [
       },
     ],
   },
-  { name: "Projects", href: "/projects" },
   {
     name: "Documents",
     href: "/documents",
@@ -273,11 +273,9 @@ function MobileNavItem({
 
       <div
         className={`overflow-hidden transition-all duration-300 ${
-          // Use a tall enough max-h to fit nested accordions expanding inside
           open ? "max-h-[600px]" : "max-h-0"
         }`}
       >
-        {/* Turquoise border = level 1, pink border = level 2 (in MobileNestedItem) */}
         <div className="flex flex-col p-4 space-y-3 border-l-2 border-turquoise/60">
           {item.children.map((child) => (
             <MobileNestedItem key={child.name} child={child} onClose={onClose} />
@@ -287,8 +285,6 @@ function MobileNavItem({
     </div>
   );
 }
-
-// ─── Navbar ───────────────────────────────────────────────────────────────────
 
 export const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
