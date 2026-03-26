@@ -45,7 +45,7 @@ export default function NewsPage() {
     if (categoryFilter) params.category = categoryFilter;
     getArticles(params as never).then((res) => {
       if (cancelled) return;
-      if (res.success) setArticles(res.data);
+      if (res.success) setArticles(res.data.results);
       setLoading(false);
     });
     return () => { cancelled = true; };

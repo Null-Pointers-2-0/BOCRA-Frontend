@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Navbar } from "@/components/Navbar";
+import { Footer } from "@/components/Footer";
 import { scorecardClient } from "@/lib/api/clients";
 import type {
   OperatorScore,
@@ -128,9 +130,15 @@ export default function ScorecardPage() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <Loader2 className="h-8 w-8 animate-spin text-[#0073ae]" />
-      </div>
+      <>
+        <Navbar />
+        <main className="min-h-screen flex flex-col px-6">
+          <div className="mt-20 md:mt-30 flex items-center justify-center min-h-[60vh]">
+            <Loader2 className="h-8 w-8 animate-spin text-[#0073ae]" />
+          </div>
+        </main>
+        <Footer />
+      </>
     );
   }
 
@@ -141,7 +149,10 @@ export default function ScorecardPage() {
   ];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8 space-y-6">
+    <>
+      <Navbar />
+      <main className="min-h-screen flex flex-col px-6">
+        <div className="mt-20 md:mt-30 max-w-7xl mx-auto w-full py-8 space-y-6">
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold text-gray-900">
@@ -197,6 +208,9 @@ export default function ScorecardPage() {
         />
       )}
     </div>
+      </main>
+      <Footer />
+    </>
   );
 }
 

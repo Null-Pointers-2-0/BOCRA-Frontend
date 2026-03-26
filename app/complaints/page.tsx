@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { Footer } from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
@@ -46,7 +46,15 @@ const OPERATORS = [
   "Other",
 ];
 
-export default function Complaints() {
+export default function ComplaintsPage() {
+  return (
+    <Suspense>
+      <Complaints />
+    </Suspense>
+  );
+}
+
+function Complaints() {
   const searchParams = useSearchParams();
   const trackSectionRef = useRef<HTMLDivElement>(null);
 

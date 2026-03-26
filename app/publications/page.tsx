@@ -34,7 +34,7 @@ export default function PublicationsPage() {
     if (categoryFilter) params.category = categoryFilter;
     getPublications(params as never).then((res) => {
       if (cancelled) return;
-      if (res.success) setPublications(res.data);
+      if (res.success) setPublications(res.data.results);
       setLoading(false);
     });
     return () => { cancelled = true; };
