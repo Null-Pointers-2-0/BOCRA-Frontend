@@ -22,7 +22,15 @@ import { Input } from "./ui/input";
 
 const topLinks = [
   { name: "BOCRA Portal", href: "https://op-web.bocra.org.bw" },
-  { name: "QOS Monitoring", href: "https://dqos.bocra.org.bw" },
+  {
+    name: "QOS Monitoring",
+    href: "/qos",
+    children: [
+      { name: "Network Coverage", href: "/qos/coverage" },
+      { name: "QoE Review", href: "/qos/qoe" },
+      { name: "Scorecard", href: "/qos/scorecard" },
+    ],
+  },
   { name: "Licensing", href: "/licensing" },
   {
     name: "Telecom Statistics",
@@ -32,7 +40,7 @@ const topLinks = [
 ];
 
 const extraTopLinks = [
-  { name: "Register BW", href: "https://nic.net.bw" },
+  { name: "Domain Registry", href: "/domain-registry" },
   { name: "Type Approval", href: "https://typeapproval.bocra.org.bw" },
 ];
 
@@ -40,7 +48,7 @@ const extraNavLinks = [
   { name: "ASMS-WebCP", href: "https://registration.bocra.org.bw" },
   {
     name: "License Verification",
-    href: "https://customerportal.bocra.org.bw/OnlineLicenseVerification/verify",
+    href: "/verify-license",
   },
 ];
 
@@ -88,35 +96,23 @@ const navItems: NavItem[] = [
     name: "Documents",
     href: "/documents",
     children: [
-      { name: "Draft documents and legislation", href: "/draft-documents-and-legislation" },
-      { name: "ICT Licensing Framework", href: "/ict-licensing-framework" },
-      { name: "ITU Capacity Building Workshop", href: "/itu-capacity-building-workshop" },
-      // Tenders is nested inside Documents
-      {
-        name: "Tenders",
-        href: "/tenders",
-        children: [
-          { name: "Current Tenders", href: "/tenders/current" },
-          { name: "Awarded Tenders", href: "/tenders/awarded" },
-          { name: "Tender Archive", href: "/tenders/archive" },
-        ],
-      },
+      { name: "Publications", href: "/publications" },
+      { name: "Tenders", href: "/tenders" },
     ],
   },
   {
     name: "Complaints",
     href: "/complaints",
     children: [
-      { name: "Consumer education and advice", href: "/consumer-education-and-advice" },
-      { name: "Registering complaints", href: "/registering-a-complaint" },
       { name: "File a complaint", href: "/complaints" },
+      { name: "Track a complaint", href: "/complaints#track" },
     ],
   },
   {
     name: "Media",
     href: "/media-center",
     children: [
-      { name: "News & Events", href: "/news-and-events" },
+      { name: "News", href: "/news" },
       { name: "Speeches", href: "/speeches" },
     ],
   },
@@ -286,6 +282,45 @@ function MobileNavItem({
   );
 }
 
+function TopBarDropdown({
+  link,
+}: {
+  link: { name: string; href: string; children: { name: string; href: string }[] };
+}) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div
+      className="relative"
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => setOpen(false)}
+    >
+      <Link
+        href={link.href}
+        className="hover:text-gold transition-colors text-sm flex flex-row items-center gap-1"
+      >
+        {link.name}
+        <CaretDownIcon
+          className={`h-3 w-3 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+        />
+      </Link>
+      {open && (
+        <div className="absolute top-full left-0 mt-0 bg-white rounded-md shadow-lg border border-gray-200 py-1 min-w-[180px] z-50">
+          {link.children.map((child) => (
+            <Link
+              key={child.name}
+              href={child.href}
+              className="block px-4 py-2 text-sm text-gray-700 hover:bg-pink/10 hover:text-pink transition-colors"
+            >
+              {child.name}
+            </Link>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const logoSrc = "/bocra-logo.png";
@@ -307,16 +342,20 @@ export const Navbar = () => {
           </div>
         </div>
         <div className="flex flex-row px-6 py-2 space-x-6">
-          {topLinks.map((link) => (
-            <Link
-              className="hover:text-gold transition-colors text-sm flex flex-row items-center gap-1"
-              key={link.name}
-              href={link.href}
-            >
-              {link.name}
-              {link.icon && link.icon}
-            </Link>
-          ))}
+          {topLinks.map((link) =>
+            link.children ? (
+              <TopBarDropdown key={link.name} link={link} />
+            ) : (
+              <Link
+                className="hover:text-gold transition-colors text-sm flex flex-row items-center gap-1"
+                key={link.name}
+                href={link.href}
+              >
+                {link.name}
+                {link.icon && link.icon}
+              </Link>
+            )
+          )}
           {extraTopLinks.map((link) => (
             <Link
               className="hover:text-gold transition-colors text-sm flex flex-row items-center gap-1 bg-dark-teal text-white px-2 py-1"

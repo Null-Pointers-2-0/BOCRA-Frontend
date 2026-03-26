@@ -29,7 +29,7 @@ export async function trackComplaint(
   referenceNumber: string
 ): Promise<ApiResponse<ComplaintTrack>> {
   return apiClient<ComplaintTrack>("/complaints/track/", {
-    params: { reference: referenceNumber },
+    params: { ref: referenceNumber },
   });
 }
 
