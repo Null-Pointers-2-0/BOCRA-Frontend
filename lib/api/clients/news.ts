@@ -1,5 +1,5 @@
 import { apiClient } from "../client";
-import type { ApiResponse, PaginatedData } from "../types/common";
+import type { ApiResponse } from "../types/common";
 import type {
   ArticleListItem,
   ArticleDetail,
@@ -8,8 +8,8 @@ import type {
 
 export async function getArticles(
   params?: PublicArticleListParams
-): Promise<ApiResponse<PaginatedData<ArticleListItem>>> {
-  return apiClient<PaginatedData<ArticleListItem>>("/news/", {
+): Promise<ApiResponse<ArticleListItem[]>> {
+  return apiClient<ArticleListItem[]>("/news/", {
     params: params as Record<string, string | number | boolean | undefined>,
   });
 }

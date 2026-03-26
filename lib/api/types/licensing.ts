@@ -1,19 +1,53 @@
 import type { ApplicationStatus, LicenceStatus } from "./common";
 
+// ── Licence Sector ──
+export type LicenceSector = {
+  id: string;
+  name: string;
+  code: string;
+  description: string;
+  icon: string;
+  sort_order: number;
+  is_active: boolean;
+  type_count: number;
+};
+
+export type LicenceSectorDetail = {
+  id: string;
+  name: string;
+  code: string;
+  description: string;
+  icon: string;
+  sort_order: number;
+  is_active: boolean;
+  licence_types: LicenceType[];
+  created_at: string;
+  updated_at: string;
+};
+
 // ── Licence Type ──
 export type LicenceType = {
   id: string;
   name: string;
   code: string;
+  sector: string | null;
+  sector_name: string;
+  sector_code: string;
   description: string;
   fee_amount: string;
+  annual_fee: string;
+  renewal_fee: string;
   fee_currency: string;
   validity_period_months: number;
+  is_domain_applicable: boolean;
+  sort_order: number;
   is_active: boolean;
 };
 
 export type LicenceTypeDetail = LicenceType & {
   requirements: string;
+  eligibility_criteria: string;
+  required_documents: { name: string; required: boolean }[];
   created_at: string;
   updated_at: string;
 };

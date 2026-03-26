@@ -1,5 +1,5 @@
 import { apiClient } from "../client";
-import type { ApiResponse, PaginatedData } from "../types/common";
+import type { ApiResponse } from "../types/common";
 import type {
   TenderListItem,
   TenderDetail,
@@ -8,8 +8,8 @@ import type {
 
 export async function getTenders(
   params?: PublicTenderListParams
-): Promise<ApiResponse<PaginatedData<TenderListItem>>> {
-  return apiClient<PaginatedData<TenderListItem>>("/tenders/", {
+): Promise<ApiResponse<TenderListItem[]>> {
+  return apiClient<TenderListItem[]>("/tenders/", {
     params: params as Record<string, string | number | boolean | undefined>,
   });
 }

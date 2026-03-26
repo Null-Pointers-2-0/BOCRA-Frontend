@@ -1,340 +1,543 @@
 "use client";
 
-import { useState } from "react";
-import { Footer } from "@/components/Footer";
+import { useEffect, useState } from "react";
 import { Navbar } from "@/components/Navbar";
+import { Footer } from "@/components/Footer";
 import {
-  Combobox,
-  ComboboxInput,
-  ComboboxContent,
-  ComboboxList,
-  ComboboxItem,
-  ComboboxEmpty,
-} from "@/components/ui/combobox";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
+  submitComplaint,
+  trackComplaint,
+  getCategories,
+} from "@/lib/api/clients/complaints";
+import type { ComplaintCategoryOption, ComplaintTrack, ComplaintCreateRequest } from "@/lib/api/types/complaints";
+import type { ComplaintCategory } from "@/lib/api/types/common";
+import {
+  Spinner as SpinnerIcon,
+  PaperPlaneTilt as PaperPlaneTiltIcon,
+  MagnifyingGlass as MagnifyingGlassIcon,
+  CheckCircle as CheckCircleIcon,
+  WarningCircle as WarningCircleIcon,
+  ClipboardText as ClipboardTextIcon,
+  Clock as ClockIcon,
+  Shield as ShieldIcon,
+  Copy as CopyIcon,
+} from "@phosphor-icons/react";
 
-export default function Complaints() {
-  const complaintsCategories = [
-    "SERVICE_QUALITY",
-    "BILLING",
-    "COVERAGE",
-    "CONDUCT",
-    "INTERNET",
-    "BROADCASTING",
-    "POSTAL",
-    "OTHER",
-  ];
-  const priorities = ["LOW", "MEDIUM", "HIGH"];
-  const operators = [
-    "Mascom",
-    "Orange",
-    "Botswana Telecommunications Corporation",
-    "Jenny Internet",
-    "Paratus",
-    "Starlink",
-    "Other",
-  ];
+type Tab = "submit" | "track";
 
-  const [formData, setFormData] = useState<Partial<Complaint>>({
-    complaint_name: "",
-    complaint_email: "",
-    complaint_phone: "",
-    against_operator_name: "",
-    category: "",
-    subject: "",
-    description: "",
-    priority: "",
-  });
+const OPERATORS = [
+  { value: "Mascom", label: "Mascom Wireless" },
+  { value: "Orange", label: "Orange Botswana" },
+  { value: "beMobile", label: "beMobile (BTCL)" },
+];
 
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [selectedPriority, setSelectedPriority] = useState("");
-  const [selectedOperator, setSelectedOperator] = useState("");
-
-  const handleOperatorChange = (value: string | null) => {
-    setSelectedOperator(value || "");
-  };
-
-  const handleCategoryChange = (value: string | null) => {
-    setSelectedCategory(value || "");
-  };
-
-  const handlePriorityChange = (value: string | null) => {
-    setSelectedPriority(value || "");
-  };
-
-  const handleInputChange = (field: keyof Complaint, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-  };
-
-  const handleSubmit = (e: React.SubmitEvent) => {
-    e.preventDefault();
-    console.log("Form submitted:", {
-      ...formData,
-      category: selectedCategory,
-      priority: selectedPriority,
-      against_operator_name: selectedOperator,
-    });
-  };
-
-  const complaintsExample = [
-    {
-      complaint_name: "Kitso Thebe",
-      complaint_email: "kitsothebe@gmail.com",
-      complaint_phone: "+267 71234567",
-      against_operator_name: "Orange",
-      category: "BILLING",
-      subject: "Billing Problems",
-      description: "They charge way too much",
-      priority: "HIGH",
-    },
-  ];
+export default function ComplaintsPage() {
+  const [tab, setTab] = useState<Tab>("submit");
 
   return (
     <>
       <Navbar />
-      <main className="min-h-screen flex flex-col justify-center items-center px-6">
-        <div className="flex flex-col items-center justify-center space-y-2 mt-30">
-          <h1 className="text-3xl font-semibold">File a complaint</h1>
-          <form
-            onSubmit={handleSubmit}
-            className="bg-gray-50 border border-gray-400 p-6 grid grid-cols-1 md:grid-cols-2 gap-5"
-          >
-            <div>
-              <label htmlFor="name" className="font-medium text-lg">
-                Enter name <span className="text-pink">*</span>
-              </label>
-              <Input
-                id="name"
-                type="text"
-                placeholder="Kitso Thebe..."
-                autoComplete="true"
-                value={formData.complaint_name}
-                onChange={(e) =>
-                  handleInputChange("complaint_name", e.target.value)
-                }
-              />
-            </div>
-            <div>
-              <label htmlFor="email" className="font-medium text-lg">
-                Enter email address <span className="text-pink">*</span>
-              </label>
-              <Input
-                id="email"
-                type="text"
-                placeholder="example@gmail.com"
-                autoComplete="true"
-                value={formData.complaint_email}
-                onChange={(e) =>
-                  handleInputChange("complaint_email", e.target.value)
-                }
-              />
-            </div>
-            <div>
-              <label htmlFor="phoneNumber" className="font-medium text-lg">
-                Enter phone number <span className="text-pink">*</span>
-              </label>
-              <Input
-                id="phoneNumber"
-                type="text"
-                placeholder="+267 71234567"
-                autoComplete="true"
-                value={formData.complaint_phone}
-                onChange={(e) =>
-                  handleInputChange("complaint_phone", e.target.value)
-                }
-              />
-            </div>
-            <div>
-              <label htmlFor="operatorAgainst" className="font-medium text-lg">
-                Select service provider <span className="text-pink">*</span>
-              </label>
-              <Combobox
-                value={selectedOperator}
-                onValueChange={handleOperatorChange}
+      <main className="min-h-screen flex flex-col items-center px-6">
+        <div className="w-full max-w-3xl mt-30 space-y-8 pb-16">
+          <div className="space-y-3">
+            <h1 className="text-3xl md:text-4xl font-bold">Complaints</h1>
+            <p className="text-gray-600 max-w-3xl">
+              Submit a complaint about a telecommunications service provider or track
+              the status of an existing complaint using your reference number.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-1 border-b border-gray-200">
+            {([
+              { key: "submit" as const, label: "Submit Complaint", icon: <PaperPlaneTiltIcon size={16} /> },
+              { key: "track" as const, label: "Track Complaint", icon: <MagnifyingGlassIcon size={16} /> },
+            ]).map((t) => (
+              <button
+                key={t.key}
+                onClick={() => setTab(t.key)}
+                className={`flex items-center gap-2 px-5 py-2.5 text-sm font-medium border-b-2 transition-colors cursor-pointer ${
+                  tab === t.key
+                    ? "border-[#0073ae] text-[#0073ae]"
+                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                }`}
               >
-                <ComboboxInput
-                  placeholder="Select operator..."
-                  showClear={true}
-                />
-                <ComboboxContent>
-                  <ComboboxList>
-                    {operators.map((operator) => (
-                      <ComboboxItem
-                        key={operator}
-                        value={operator}
-                        className="hover:bg-turquoise hover:text-white"
-                      >
-                        {operator}
-                      </ComboboxItem>
-                    ))}
-                  </ComboboxList>
-                </ComboboxContent>
-              </Combobox>
-            </div>
-            <div>
-              <label htmlFor="category" className="font-medium text-lg">
-                Select category <span className="text-pink">*</span>
-              </label>
-              <Combobox
-                value={selectedCategory}
-                onValueChange={handleCategoryChange}
-              >
-                <ComboboxInput
-                  placeholder="Select a category..."
-                  showClear={true}
-                />
-                <ComboboxContent>
-                  <ComboboxList>
-                    {complaintsCategories.map((category) => (
-                      <ComboboxItem key={category} value={category}>
-                        {category.replace(/_/g, " ").toLowerCase()}
-                      </ComboboxItem>
-                    ))}
-                    <ComboboxEmpty>No category found</ComboboxEmpty>
-                  </ComboboxList>
-                </ComboboxContent>
-              </Combobox>
-            </div>
-            <div>
-              <label htmlFor="priority" className="font-medium text-lg">
-                Select priority <span className="text-pink">*</span>
-              </label>
-              <Combobox
-                value={selectedPriority}
-                onValueChange={handlePriorityChange}
-              >
-                <ComboboxInput
-                  placeholder="Select priority..."
-                  showClear={true}
-                />
-                <ComboboxContent>
-                  <ComboboxList>
-                    {priorities.map((priority) => (
-                      <ComboboxItem key={priority} value={priority}>
-                        {priority.toLowerCase()}
-                      </ComboboxItem>
-                    ))}
-                  </ComboboxList>
-                </ComboboxContent>
-              </Combobox>
-            </div>
-            <div className="md:col-span-2">
-              <label htmlFor="subject" className="font-medium text-lg">
-                Subject <span className="text-pink">*</span>
-              </label>
-              <Input
-                id="subject"
-                type="text"
-                placeholder="Brief description of your complaint..."
-                value={formData.subject}
-                onChange={(e) => handleInputChange("subject", e.target.value)}
-              />
-            </div>
-            <div className="md:col-span-2">
-              <label htmlFor="description" className="font-medium text-lg">
-                Detailed description <span className="text-pink">*</span>
-              </label>
-              <Textarea
-                id="description"
-                placeholder="Please provide detailed information about your complaint..."
-                className="border border-gray-400"
-                rows={6}
-                value={formData.description}
-                onChange={(e) =>
-                  handleInputChange("description", e.target.value)
-                }
-              />
-            </div>
-            <div className="md:col-span-2">
-              <Button
-                type="submit"
-                className="w-full hover:bg-turquoise/90 hover:cursor-pointer bg-turquoise text-white text-lg font-medium py-6"
-              >
-                Submit Complaint
-              </Button>
-            </div>
-          </form>
-        <section className="w-full max-w-4xl">
-          <h2 className="text-2xl font-semibold mb-6">Recent Complaints</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {complaintsExample.map((complaint, index) => (
-              <ComplaintsCard key={index} complaint={complaint} />
+                {t.icon}
+                {t.label}
+              </button>
             ))}
           </div>
-        </section>
+
+          {tab === "submit" && <SubmitForm />}
+          {tab === "track" && <TrackForm />}
         </div>
+        <Footer />
       </main>
-      <Footer />
     </>
   );
 }
-type Complaint = {
-  complaint_name: string;
-  complaint_email: string;
-  complaint_phone: string;
-  against_operator_name: string;
-  category: string;
-  subject: string;
-  description: string;
-  priority: string;
-};
 
-const ComplaintsCard = ({ complaint }: { complaint: Complaint }) => {
-  return (
-    <div className="bg-gray-50 border border-gray-400 p-4">
-      <div className="flex justify-between items-start mb-4">
-        <h3 className="font-semibold text-lg text-gray-900">
-          {complaint.subject}
-        </h3>
-        <span
-          className={`px-3 py-1 text-xs font-medium ${
-            complaint.priority === "HIGH"
-              ? "bg-pink text-white"
-              : complaint.priority === "MEDIUM"
-                ? "bg-yellow-100 text-yellow-800"
-                : "bg-green-100 text-green-800"
-          }`}
+/* ── Submit Form ── */
+function SubmitForm() {
+  const [categories, setCategories] = useState<ComplaintCategoryOption[]>([]);
+  const [categoriesLoading, setCategoriesLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [success, setSuccess] = useState<{ reference: string; subject: string } | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string[]>>({});
+
+  const [form, setForm] = useState({
+    complainant_name: "",
+    complainant_email: "",
+    complainant_phone: "",
+    against_operator_name: "",
+    category: "" as string,
+    subject: "",
+    description: "",
+  });
+
+  useEffect(() => {
+    setCategoriesLoading(true);
+    getCategories()
+      .then((res) => {
+        if (res.success) setCategories(res.data);
+      })
+      .catch(() => {})
+      .finally(() => setCategoriesLoading(false));
+  }, []);
+
+  function updateField(field: string, value: string) {
+    setForm((prev) => ({ ...prev, [field]: value }));
+    if (fieldErrors[field]) {
+      setFieldErrors((prev) => {
+        const next = { ...prev };
+        delete next[field];
+        return next;
+      });
+    }
+  }
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setError(null);
+    setFieldErrors({});
+
+    if (!form.complainant_name || !form.complainant_email || !form.against_operator_name || !form.category || !form.subject || !form.description) {
+      setError("Please fill in all required fields.");
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      const payload: ComplaintCreateRequest = {
+        complainant_name: form.complainant_name,
+        complainant_email: form.complainant_email,
+        complainant_phone: form.complainant_phone || undefined,
+        against_operator_name: form.against_operator_name,
+        category: form.category as ComplaintCategory,
+        subject: form.subject,
+        description: form.description,
+      };
+
+      const res = await submitComplaint(payload);
+
+      if (res.success) {
+        setSuccess({
+          reference: res.data.reference_number,
+          subject: res.data.subject,
+        });
+        setForm({
+          complainant_name: "",
+          complainant_email: "",
+          complainant_phone: "",
+          against_operator_name: "",
+          category: "",
+          subject: "",
+          description: "",
+        });
+      } else {
+        if (res.errors) {
+          setFieldErrors(res.errors);
+        }
+        setError(res.message || "Failed to submit complaint. Please try again.");
+      }
+    } catch {
+      setError("An unexpected error occurred. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  if (success) {
+    return (
+      <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-8 text-center space-y-4">
+        <CheckCircleIcon size={48} className="text-emerald-600 mx-auto" weight="fill" />
+        <h3 className="text-xl font-bold text-emerald-800">Complaint Submitted!</h3>
+        <p className="text-emerald-700">
+          Your complaint about &ldquo;{success.subject}&rdquo; has been submitted successfully.
+        </p>
+        <div className="bg-white rounded-lg border border-emerald-200 p-4 inline-block">
+          <p className="text-sm text-gray-600 mb-1">Reference Number</p>
+          <div className="flex items-center gap-2 justify-center">
+            <span className="text-2xl font-mono font-bold text-[#0073ae]">
+              {success.reference}
+            </span>
+            <button
+              onClick={() => navigator.clipboard.writeText(success.reference)}
+              className="p-1 hover:bg-gray-100 rounded cursor-pointer"
+              title="Copy"
+            >
+              <CopyIcon size={18} className="text-gray-400" />
+            </button>
+          </div>
+        </div>
+        <p className="text-sm text-emerald-600">
+          Save this reference number to track your complaint&apos;s progress.
+        </p>
+        <button
+          onClick={() => setSuccess(null)}
+          className="px-6 py-2 bg-[#0073ae] text-white rounded-lg font-medium hover:bg-[#005c8a] transition-colors cursor-pointer"
         >
-          {complaint.priority}
-        </span>
+          Submit Another Complaint
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-6">
+      {error && (
+        <div className="flex items-start gap-3 bg-red-50 border border-red-200 text-red-700 p-4 rounded-lg">
+          <WarningCircleIcon size={20} className="flex-shrink-0 mt-0.5" weight="fill" />
+          <span className="text-sm">{error}</span>
+        </div>
+      )}
+
+      <div className="rounded-xl border border-gray-200 bg-white p-6 space-y-5">
+        <h3 className="text-lg font-semibold text-gray-900">Your Information</h3>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <Field
+            label="Full Name"
+            required
+            error={fieldErrors.complainant_name}
+          >
+            <input
+              type="text"
+              value={form.complainant_name}
+              onChange={(e) => updateField("complainant_name", e.target.value)}
+              className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-[#0073ae] focus:ring-1 focus:ring-[#0073ae] outline-none"
+              placeholder="e.g. John Doe"
+            />
+          </Field>
+
+          <Field
+            label="Email Address"
+            required
+            error={fieldErrors.complainant_email}
+          >
+            <input
+              type="email"
+              value={form.complainant_email}
+              onChange={(e) => updateField("complainant_email", e.target.value)}
+              className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-[#0073ae] focus:ring-1 focus:ring-[#0073ae] outline-none"
+              placeholder="e.g. john@example.com"
+            />
+          </Field>
+        </div>
+
+        <Field
+          label="Phone Number"
+          hint="Botswana format: +267XXXXXXXX or 7XXXXXXX"
+          error={fieldErrors.complainant_phone}
+        >
+          <input
+            type="tel"
+            value={form.complainant_phone}
+            onChange={(e) => updateField("complainant_phone", e.target.value)}
+            className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-[#0073ae] focus:ring-1 focus:ring-[#0073ae] outline-none"
+            placeholder="e.g. +26771234567"
+          />
+        </Field>
       </div>
 
-      <div className="space-y-3">
-        <div className="flex items-center text-sm text-gray-600">
-          <span className="font-medium mr-2">From:</span>
-          <span>{complaint.complaint_name}</span>
+      <div className="rounded-xl border border-gray-200 bg-white p-6 space-y-5">
+        <h3 className="text-lg font-semibold text-gray-900">Complaint Details</h3>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <Field
+            label="Operator"
+            required
+            error={fieldErrors.against_operator_name}
+          >
+            <select
+              value={form.against_operator_name}
+              onChange={(e) => updateField("against_operator_name", e.target.value)}
+              className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-[#0073ae] focus:ring-1 focus:ring-[#0073ae] outline-none"
+            >
+              <option value="">Select operator...</option>
+              {OPERATORS.map((op) => (
+                <option key={op.value} value={op.value}>
+                  {op.label}
+                </option>
+              ))}
+            </select>
+          </Field>
+
+          <Field
+            label="Category"
+            required
+            error={fieldErrors.category}
+          >
+            <select
+              value={form.category}
+              onChange={(e) => updateField("category", e.target.value)}
+              className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-[#0073ae] focus:ring-1 focus:ring-[#0073ae] outline-none"
+              disabled={categoriesLoading}
+            >
+              <option value="">
+                {categoriesLoading ? "Loading..." : "Select category..."}
+              </option>
+              {categories.map((cat) => (
+                <option key={cat.value} value={cat.value}>
+                  {cat.label}
+                </option>
+              ))}
+            </select>
+          </Field>
         </div>
 
-        <div className="flex items-center text-sm text-gray-600">
-          <span className="font-medium mr-2">Email:</span>
-          <span>{complaint.complaint_email}</span>
-        </div>
+        <Field
+          label="Subject"
+          required
+          error={fieldErrors.subject}
+        >
+          <input
+            type="text"
+            value={form.subject}
+            onChange={(e) => updateField("subject", e.target.value)}
+            className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-[#0073ae] focus:ring-1 focus:ring-[#0073ae] outline-none"
+            placeholder="Brief summary of your complaint"
+          />
+        </Field>
 
-        <div className="flex items-center text-sm text-gray-600">
-          <span className="font-medium mr-2">Phone:</span>
-          <span>{complaint.complaint_phone}</span>
-        </div>
+        <Field
+          label="Description"
+          required
+          error={fieldErrors.description}
+        >
+          <textarea
+            value={form.description}
+            onChange={(e) => updateField("description", e.target.value)}
+            rows={5}
+            className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:border-[#0073ae] focus:ring-1 focus:ring-[#0073ae] outline-none resize-none"
+            placeholder="Provide details about your complaint including dates, locations, and any relevant information..."
+          />
+        </Field>
+      </div>
 
-        <div className="flex items-center text-sm text-gray-600">
-          <span className="font-medium mr-2">Against:</span>
-          <span>{complaint.against_operator_name}</span>
-        </div>
+      <button
+        type="submit"
+        disabled={submitting}
+        className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-[#0073ae] text-white rounded-lg font-medium hover:bg-[#005c8a] transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+      >
+        {submitting ? (
+          <>
+            <SpinnerIcon className="animate-spin" size={18} />
+            Submitting...
+          </>
+        ) : (
+          <>
+            <PaperPlaneTiltIcon size={18} weight="fill" />
+            Submit Complaint
+          </>
+        )}
+      </button>
+    </form>
+  );
+}
 
-        <div className="flex items-center text-sm text-gray-600 gap-2">
-          <span className="font-medium">Category:</span>
-          <span className="px-2 py-1 text-black bg-gray-400 text-xs">
-            {complaint.category}
+function Field({
+  label,
+  required,
+  hint,
+  error,
+  children,
+}: {
+  label: string;
+  required?: boolean;
+  hint?: string;
+  error?: string[];
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="space-y-1.5">
+      <label className="block text-sm font-medium text-gray-700">
+        {label}
+        {required && <span className="text-red-500 ml-0.5">*</span>}
+      </label>
+      {children}
+      {hint && <p className="text-xs text-gray-400">{hint}</p>}
+      {error && error.length > 0 && (
+        <p className="text-xs text-red-600">{error.join(", ")}</p>
+      )}
+    </div>
+  );
+}
+
+/* ── Track Form ── */
+function TrackForm() {
+  const [reference, setReference] = useState("");
+  const [tracking, setTracking] = useState(false);
+  const [result, setResult] = useState<ComplaintTrack | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  async function handleTrack(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (!reference.trim()) return;
+
+    setTracking(true);
+    setError(null);
+    setResult(null);
+
+    try {
+      const res = await trackComplaint(reference.trim());
+      if (res.success) {
+        setResult(res.data);
+      } else {
+        setError(res.message || "Complaint not found. Please check your reference number.");
+      }
+    } catch {
+      setError("An unexpected error occurred. Please try again.");
+    } finally {
+      setTracking(false);
+    }
+  }
+
+  return (
+    <div className="space-y-6">
+      <form onSubmit={handleTrack} className="rounded-xl border border-gray-200 bg-white p-6 space-y-4">
+        <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+          <MagnifyingGlassIcon size={20} />
+          Track Your Complaint
+        </h3>
+        <p className="text-sm text-gray-500">
+          Enter the reference number you received when you submitted your complaint.
+        </p>
+        <div className="flex gap-3">
+          <input
+            type="text"
+            value={reference}
+            onChange={(e) => setReference(e.target.value)}
+            className="flex-1 rounded-lg border border-gray-300 px-4 py-2.5 text-sm font-mono focus:border-[#0073ae] focus:ring-1 focus:ring-[#0073ae] outline-none"
+            placeholder="e.g. CMP-20250101-ABCD"
+          />
+          <button
+            type="submit"
+            disabled={tracking || !reference.trim()}
+            className="flex items-center gap-2 px-6 py-2.5 bg-[#0073ae] text-white rounded-lg font-medium hover:bg-[#005c8a] transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+          >
+            {tracking ? (
+              <SpinnerIcon className="animate-spin" size={18} />
+            ) : (
+              <MagnifyingGlassIcon size={18} />
+            )}
+            Track
+          </button>
+        </div>
+      </form>
+
+      {error && (
+        <div className="flex items-start gap-3 bg-red-50 border border-red-200 text-red-700 p-4 rounded-lg">
+          <WarningCircleIcon size={20} className="flex-shrink-0 mt-0.5" weight="fill" />
+          <span className="text-sm">{error}</span>
+        </div>
+      )}
+
+      {result && <TrackResult result={result} />}
+    </div>
+  );
+}
+
+function TrackResult({ result }: { result: ComplaintTrack }) {
+  const statusColors: Record<string, { bg: string; text: string }> = {
+    SUBMITTED: { bg: "bg-blue-50", text: "text-blue-700" },
+    ASSIGNED: { bg: "bg-indigo-50", text: "text-indigo-700" },
+    INVESTIGATING: { bg: "bg-amber-50", text: "text-amber-700" },
+    AWAITING_RESPONSE: { bg: "bg-orange-50", text: "text-orange-700" },
+    RESOLVED: { bg: "bg-emerald-50", text: "text-emerald-700" },
+    CLOSED: { bg: "bg-gray-100", text: "text-gray-700" },
+    REOPENED: { bg: "bg-red-50", text: "text-red-700" },
+  };
+
+  const sc = statusColors[result.status] || { bg: "bg-gray-100", text: "text-gray-700" };
+
+  return (
+    <div className="rounded-xl border border-gray-200 bg-white overflow-hidden">
+      <div className="p-6 border-b border-gray-200">
+        <div className="flex items-start justify-between">
+          <div>
+            <p className="text-sm text-gray-500 font-mono">{result.reference_number}</p>
+            <h3 className="text-lg font-bold text-gray-900 mt-1">{result.subject}</h3>
+          </div>
+          <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold ${sc.bg} ${sc.text}`}>
+            <ShieldIcon size={12} weight="fill" />
+            {result.status_display}
           </span>
         </div>
+      </div>
 
-        <div className="pt-3 border-t border-gray-500">
-          <p className="text-lg text-black leading-relaxed">
-            {complaint.description}
-          </p>
+      <div className="p-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <TrackField icon={<ClipboardTextIcon size={16} className="text-gray-400" />} label="Category" value={result.category_display} />
+        <TrackField icon={<ShieldIcon size={16} className="text-gray-400" />} label="Against" value={result.against_operator_name} />
+        <TrackField icon={<ClockIcon size={16} className="text-gray-400" />} label="Submitted" value={new Date(result.created_at).toLocaleDateString("en-BW", { year: "numeric", month: "long", day: "numeric" })} />
+        <TrackField
+          icon={<ClockIcon size={16} className="text-gray-400" />}
+          label="Priority"
+          value={result.priority_display}
+        />
+        {result.sla_deadline && (
+          <TrackField
+            icon={<ClockIcon size={16} className="text-gray-400" />}
+            label="SLA Deadline"
+            value={new Date(result.sla_deadline).toLocaleDateString("en-BW", { year: "numeric", month: "long", day: "numeric" })}
+          />
+        )}
+        {result.resolved_at && (
+          <TrackField
+            icon={<CheckCircleIcon size={16} className="text-emerald-500" weight="fill" />}
+            label="Resolved"
+            value={new Date(result.resolved_at).toLocaleDateString("en-BW", { year: "numeric", month: "long", day: "numeric" })}
+          />
+        )}
+      </div>
+
+      {result.is_overdue && (
+        <div className="px-6 pb-4">
+          <div className="flex items-center gap-2 text-sm text-red-600 bg-red-50 border border-red-200 p-3 rounded-lg">
+            <WarningCircleIcon size={16} weight="fill" />
+            This complaint has exceeded the SLA deadline.
+          </div>
         </div>
+      )}
+    </div>
+  );
+}
+
+function TrackField({
+  icon,
+  label,
+  value,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+}) {
+  return (
+    <div className="flex items-start gap-2">
+      <div className="mt-0.5">{icon}</div>
+      <div>
+        <p className="text-xs text-gray-500">{label}</p>
+        <p className="text-sm font-medium text-gray-900">{value}</p>
       </div>
     </div>
   );
-};
+}
