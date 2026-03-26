@@ -1,6 +1,7 @@
 "use client";
 
 import { Footer } from "@/components/Footer";
+import HeaderSection from "@/components/HeaderSection";
 import { Navbar } from "@/components/Navbar";
 import { Spinner } from "@hugeicons/core-free-icons";
 import { InfoIcon, SpinnerBallIcon, SpinnerIcon } from "@phosphor-icons/react";
@@ -8,34 +9,50 @@ import Link from "next/link";
 
 export default function Home() {
   const newsAndEvents = [
-    { title: "PUBLIC NOTICE - BOCRA WEBSITE DEVELOPMENT HACKATHON" },
-    { title: "PRESS RELEASE - BOTSWANA COLLABORATES WITH FIVE SADC MEMBER STATES TO SUBSTANTIALLY REDUCE AND HARMONISE INTERNATIONAL ROAMING TARIFFS", },
-    { title: "MEDIA RELEASE - BOCRA Approves Reduced Data Prices for Botswana Telecommunications Corporation (BTC)", },
-    { title: "PUBLIC NOTICE - EXPRESSION OF INTEREST (EOI) FOR INCLUSION IN THE BOTSWANA COMMUNICATIONS REGULATORY AUTHORITY'S SUPPLIER DATABASE", },
-    { title: "PUBLIC NOTICE - ITA Commercial Broadcasting Radio Station Licence", },
-  ];
+  { title: "PUBLIC NOTICE — BOCRA WEBSITE DEVELOPMENT HACKATHON", date: "12 Mar 2025", tag: "Notice" },
+  { title: "BOTSWANA COLLABORATES WITH FIVE SADC MEMBER STATES TO REDUCE ROAMING TARIFFS", date: "05 Mar 2025", tag: "Press Release" },
+  { title: "BOCRA Approves Reduced Data Prices for Botswana Telecommunications Corporation (BTC)", date: "28 Feb 2025", tag: "Media Release" },
+  { title: "EXPRESSION OF INTEREST FOR BOCRA SUPPLIER DATABASE", date: "20 Feb 2025", tag: "Notice" },
+  { title: "ITA Commercial Broadcasting Radio Station Licence", date: "14 Feb 2025", tag: "Notice" },
+];
+
+const tagColors: Record<string, string> = {
+  Notice: "bg-turquoise/10 text-turquoise",
+  "Press Release": "bg-dark-teal/10 text-dark-teal",
+  "Media Release": "bg-pink/10 text-pink",
+  Release: "bg-pink/10 text-pink",
+  Report: "bg-gold/10 text-gold",
+  Guidelines: "bg-dark-teal/10 text-dark-teal",
+  Guide: "bg-turquoise/10 text-turquoise",
+};
 
   const documentsAndLegislation = [
-    { title: "Media Release" },
-    { title: "Cost Modelling Project Interim report" },
-    { title: "Enforcement Guidelines" },
-    { title: "Understand Broadband Connectivity" },
-  ];
+  { title: "Media Release", tag: "Release" },
+  { title: "Cost Modelling Project Interim Report", tag: "Report" },
+  { title: "Enforcement Guidelines", tag: "Guidelines" },
+  { title: "Understanding Broadband Connectivity", tag: "Guide" },
+];
 
   const licenses = [
-    { title: "Aircraft Radio License", href: "/licenses/aircraft-radio" },
-    { title: "Amateur Radio License", href: "/licenses/amateur-radio" },
-    { title: "Broadcasting License", href: "/licenses/broadcasting" },
-    { title: "Cellular License", href: "/licenses/cellular" },
-    { title: "Citizen Band Radio License", href: "/licenses/citizen-band-radio", },
-    { title: "Point-to-Multipoint License", href: "/licenses/point-to-multipoint", },
-    { title: "Point-to-Point License", href: "/licenses/point-to-point" },
-    { title: "Private Radio Communication License", href: "/licenses/private-radio-communication", },
-    { title: "Radio Dealers License", href: "/licenses/radio-dealers" },
-    { title: "Radio Frequency License", href: "/licenses/radio-frequency" },
-    { title: "Satellite Service License", href: "/licenses/satellite-service" },
-    { title: "Type Approval License", href: "/licenses/type-approval" },
-    { title: "VANS License", href: "/licenses/vans" },
+    { title: "Aircraft Radio License" },
+    { title: "Amateur Radio License" },
+    { title: "Broadcasting License" },
+    { title: "Cellular License" },
+    {
+      title: "Citizen Band Radio License",
+    },
+    {
+      title: "Point-to-Multipoint License",
+    },
+    { title: "Point-to-Point License" },
+    {
+      title: "Private Radio Communication License",
+    },
+    { title: "Radio Dealers License" },
+    { title: "Radio Frequency License" },
+    { title: "Satellite Service License" },
+    { title: "Type Approval License" },
+    { title: "VANS License" },
   ];
 
   return (
@@ -45,7 +62,7 @@ export default function Home() {
         <section className="flex flex-col justify-end items-end bg-[url('/hero-image.jpg')] bg-center bg-fit md:bg-contain bg-no-repeat md:bg-repeat-x h-screen w-full px-6 space-y-5 py-10">
           <div className="flex flex-col space-y-5">
             <h1 className="text-4xl md:text-7xl font-bold text-white">
-              Welcome to the Botswana Communications Regulatory Authority
+              Welcome to the <br /> <span className="text-gold">Botswana Communications Regulatory Authority</span>
             </h1>
             <p className="text-xl md:text-2xl text-white">
               Your trusted partner in telecommunications
@@ -78,72 +95,106 @@ export default function Home() {
             </Link>
           </div>
         </section>
-        <section className="bg-turquoise md:bg-[url('/about-background.jpeg')] bg-cover bg-center bg-no-repeat flex flex-col justify-start items-start md:justify-end md:items-end space-y-5 py-10 md:py-20 px-6 w-full text-white text-left">
-          <div className="flex items-center gap-2 md:w-3xl">
-            <h2 className="text-3xl md:text-5xl font-semibold">About BOCRA</h2>
+        <section className="bg-gray-50 py-16 px-6 md:px-12">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+ 
+        {/* ── NEWS & EVENTS ─────────────────────────────────── */}
+        <div className="flex flex-col gap-5">
+          {/* Section header */}
+          <div className="flex items-baseline gap-2 mb-1">
+            <h2 className="text-2xl font-bold text-gray-900">News &amp;</h2>
+            <h2 className="text-2xl font-bold text-pink">Events</h2>
           </div>
-          <p className="max-w-3xl text-lg leading-loose">
-            Botswana Communications Regulatory Authority (BOCRA) was established
-            through the Communications Regulatory Authority Act, 2012 (CRA Act)
-            on the 1st of April 2013 to regulate the communications sector in
-            Botswana, comprising telecommunications, Internet and Information
-            and Communications Technologies (ICTs), radio communications,
-            broadcasting, postal services and related matters.The CRA Act
-            replaced the Broadcasting Act [Cap 72:04], the Telecommunications
-            Act [Cap 72:03], and caused the amendment of the Postal Services Act
-            to create a converged or an integrated regulatory authority for the
-            communications industry.
-          </p>
-        </section>
-        <section className="grid md:grid-cols-2 lg:grid-cols-3 grid-cols-1 justify-center gap-5 items-center w-full py-10 px-6">
-          <div className="h-full w-full flex flex-col justify-between space-y-5">
-            <h1 className="text-3xl font-semibold">News & Events</h1>
-            <div className="flex flex-col justify-center items-center space-y-5">
-              {newsAndEvents.map((news, index) => (
-                <ol key={index} type="I" className="list-disc list-inside">
-                  <li className="font-semibold">{news.title}</li>
-                </ol>
-              ))}
-            </div>
-            <button className="bg-pink text-white w-full py-2">View All</button>
-          </div>
-          <div className="flex flex-col justify-between h-full w-full space-y-5">
-            <h1 className="text-3xl font-semibold">Documents & Legislation</h1>
-            <div className="flex flex-col space-y-5 w-full h-full">
-              <Link
-                href="/popular-documents"
-                className="text-pink underline text-lg"
+ 
+          {/* News cards */}
+          <div className="flex flex-col gap-3 flex-1">
+            {newsAndEvents.map((news, i) => (
+              <div
+                key={i}
+                className="group rounded-md bg-white border border-gray-300 hover:border-turquoise transition-all duration-200 cursor-pointer p-4 flex flex-col gap-2"
               >
-                Popular Documents
+                <div className="flex items-center justify-between gap-2">
+                  <span className={`text-[10px] font-bold tracking-widest uppercase px-2 py-0.5 rounded-sm ${tagColors[news.tag] ?? "bg-gray-100 text-gray-500"}`}>
+                    {news.tag}
+                  </span>
+                  <span className="text-[11px] text-gray-400 whitespace-nowrap">{news.date}</span>
+                </div>
+                <p className="text-sm font-semibold text-gray-800 leading-snug group-hover:text-turquoise transition-colors line-clamp-2">
+                  {news.title}
+                </p>
+              </div>
+            ))}
+          </div>
+ 
+          <button className="mt-auto bg-pink transition-colors duration-200 text-white text-md rounded-sm py-3 w-full">
+            View All News
+          </button>
+        </div>
+ 
+        {/* ── DOCUMENTS & LEGISLATION ───────────────────────── */}
+        <div className="flex flex-col gap-5">
+          <div className="flex items-baseline gap-2 mb-1">
+            <h2 className="text-2xl font-bold text-gray-900">Documents &amp;</h2>
+            <h2 className="text-2xl font-bold text-pink">Legislation</h2>
+          </div>
+ 
+          <Link href="/publications" className="inline-flex items-center gap-1 text-pink text-sm font-semibold hover:gap-3 transition-all duration-200">
+            Publications →
+          </Link>
+ 
+          <div className="flex flex-col gap-3 flex-1">
+            {documentsAndLegislation.map((doc, i) => (
+              <Link
+                href="/publications"
+                key={i}
+                className="group bg-white border rounded-md border-gray-300 hover:border-dark-teal transition-all duration-200 cursor-pointer p-4 flex items-center justify-between gap-3"
+              >
+                <div className="flex items-center gap-3 min-w-0">
+                  {/* colored left accent bar */}
+                  <div className="w-1 h-10 bg-dark-teal rounded-full flex-shrink-0 group-hover:h-12 transition-all duration-200" />
+                  <p className="text-sm font-medium text-gray-800 group-hover:text-dark-teal transition-colors leading-snug">
+                    {doc.title}
+                  </p>
+                </div>
+                <span className={`text-[10px] font-bold tracking-widest uppercase px-2 py-0.5 rounded-sm flex-shrink-0 ${tagColors[doc.tag] ?? "bg-gray-100 text-gray-500"}`}>
+                  {doc.tag}
+                </span>
               </Link>
-              {documentsAndLegislation.map((document, index) => (
-                <ol key={index} className="list-disc list-inside">
-                  <li className="font-light">{document.title}</li>
-                </ol>
-              ))}
-            </div>
-            <button className="bg-pink text-white w-full py-2">
-              View All Documents
-            </button>
+            ))}
           </div>
-          <div className="h-full w-full flex flex-col space-y-5">
-            <h1 className="text-3xl font-semibold">Apply for a License</h1>
-            <h3 className="text-lg">
-              Choose the license you want to apply for
-            </h3>
-            <div className="flex flex-col space-y-2 w-full h-full">
-              {licenses.map((license, index) => (
-                <Link
-                  key={index}
-                  href={license.href}
-                  className="text-pink underline text-lg"
-                >
-                  {license.title}
-                </Link>
-              ))}
-            </div>
+ 
+          <button className="mt-auto bg-pink transition-colors duration-200 text-white text-md rounded-sm py-3 w-full">
+            View All Documents
+          </button>
+        </div>
+ 
+        {/* ── APPLY FOR A LICENCE ───────────────────────────── */}
+        <div className="flex flex-col gap-5">
+          <div className="flex items-baseline gap-2 mb-1">
+            <h2 className="text-2xl font-bold text-gray-900">Apply for a</h2>
+            <h2 className="text-2xl font-bold text-pink">Licence</h2>
           </div>
-        </section>
+ 
+          {/* Scrollable licence card list */}
+          <div className="flex flex-col gap-2 flex-1 max-h-[420px] overflow-y-auto pr-1">
+            {licenses.map((lic, i) => (
+              <Link href="/apply-for-license" key={i}>
+                <div className="group bg-white border border-gray-300 hover:border-pink transition-all duration-200 px-4 py-3 flex items-center justify-between gap-3 rounded-md">
+                  <div className="flex items-center gap-3">
+                    <span className="w-2 h-2 rounded-full bg-pink flex-shrink-0 group-hover:scale-125 transition-transform" />
+                    <span className="text-sm text-gray-700 group-hover:text-pink transition-colors font-medium">
+                      {lic.title}
+                    </span>
+                  </div>
+                  <span className="text-gray-300 group-hover:text-pink text-sm transition-colors flex-shrink-0">→</span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+ 
+      </div>
+    </section>
         <section className="w-full flex flex-col md:justify-center md:items-center bg-dark-teal text-white py-10 space-y-5 px-6">
           <h1 className="text-3xl md:text-5xl font-semibold">
             Equipment Approval Database
@@ -158,42 +209,67 @@ export default function Home() {
             comply with international standards that are applicable in Botswana
             as a member of the ITU Region…
           </p>
-          <button className="px-6 py-2 border border-white hover:bg-white hover:text-dark-teal cursor-pointer">
+          <button className="px-6 py-2 border rounded-md border-white hover:bg-white hover:text-dark-teal cursor-pointer">
             Search Equipment
           </button>
         </section>
 
-        <section className="flex flex-col md:justify-center md:items-center px-6 space-y-5 py-10">
-          <h1 className="text-3xl md:text-5xl font-semibold">Filing Complaints</h1>
-          <main className="grid grid-cols-1 md:grid-cols-3 justify-center gap-5 items-center w-full">
-            <div className="w-full h-full space-y-5 border-l-2 border-black md:border-l-0 md:border-r-2 p-4 md:p-0">
-              <h2 className="text-2xl font-bold">Complaints Process</h2>
-              <p>
-                BOCRA will investigate a consumer complaint against a service
-                provider if there is sufficient evidence to establish a prima
-                facie case on possible breaches of any provisions under
+        <section className="bg-gray-50 py-20 px-8 md:px-16">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-14">
+              <p className="text-pink text-sm font-semibold tracking-[0.2em] uppercase mb-3">
+                Consumer Protection
               </p>
+              <h2 className="text-4xl md:text-5xl font-bold">
+                Filing Complaints
+              </h2>
             </div>
-            <div className="w-full h-full space-y-5 border-l-2 border-black md:border-l-0 md:border-r-2 p-4 md:p-0">
-              <h2 className="text-xl font-bold">Tools</h2>
-              <p>
-                In the discharge of its mandate, BOCRA, in consultation with
-                various stakeholders periodically develops regulatory tools to
-                establish minimum regulatory requirements and guide licensees,
-                consumers and other stakeholders on regulatory expectations.
-              </p>
+            <div className="grid md:grid-cols-3 gap-8 mb-12">
+              {[
+                {
+                  num: "01",
+                  title: "Complaints Process",
+                  body: "BOCRA investigates consumer complaints against service providers where sufficient evidence exists to establish a prima facie case of possible breaches.",
+                  color: "border-turquoise",
+                  numColor: "text-turquoise",
+                },
+                {
+                  num: "02",
+                  title: "Regulatory Tools",
+                  body: "In consultation with stakeholders, BOCRA periodically develops regulatory tools to establish minimum requirements and guide licensees and consumers.",
+                  color: "border-dark-teal",
+                  numColor: "text-dark-teal",
+                },
+                {
+                  num: "03",
+                  title: "Complaint Status",
+                  body: "BOCRA will keep you updated on the status of your complaint and provide a unique reference number to track progress.",
+                  color: "border-pink",
+                  numColor: "text-pink",
+                },
+              ].map((card) => (
+                <div
+                  key={card.num}
+                  className={`bg-white border-t-4 ${card.color} p-8 shadow-sm`}
+                >
+                  <p
+                    className={`text-5xl font-bold ${card.numColor} mb-4 opacity-30`}
+                  >
+                    {card.num}
+                  </p>
+                  <h3 className="text-xl font-bold mb-3">{card.title}</h3>
+                  <p className="text-gray-500 text-sm leading-relaxed">
+                    {card.body}
+                  </p>
+                </div>
+              ))}
             </div>
-            <div className="w-full h-full space-y-5 border-l-2 border-black p-4 md:border-none md:p-0">
-              <h2 className="text-2xl font-bold">Complaint Status</h2>
-              <p>
-                BOCRA will keep you updated on the status of your complaint and
-                provide you with a reference number for your complaint.
-              </p>
+            <div className="text-center">
+              <button className="px-4 py-2 bg-pink rounded-sm text-white hover:cursor-pointer">
+                File a Complaint
+              </button>
             </div>
-          </main>
-          <button className="px-6 py-2 border border-pink text-pink hover:bg-pink hover:text-white cursor-pointer">
-            File a complaint
-          </button>
+          </div>
         </section>
         <Footer />
       </main>

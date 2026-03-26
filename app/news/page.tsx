@@ -84,7 +84,7 @@ export default function NewsPage() {
     return (
       <main>
         <Navbar />
-        <div className="min-h-screen px-6 mt-20 md:mt-30 mb-16">
+        <div className="min-h-screen px-6 mt-20 mb-16">
           <div className="max-w-4xl mx-auto space-y-6">
             <button
               onClick={() => setSelectedArticle(null)}
@@ -154,8 +154,8 @@ export default function NewsPage() {
   return (
     <main>
       <Navbar />
-      <div className="min-h-screen px-6 mt-20 md:mt-30">
-        <div className="space-y-5 max-w-5xl mx-auto">
+      <div className="min-h-screen px-6 mt-20">
+        <div className="space-y-5 max-w-4xl mx-auto">
           <div className="flex flex-col gap-4">
             <HeaderSection title="news" />
             <div className="flex flex-col md:flex-row gap-3 items-center">
@@ -194,7 +194,7 @@ export default function NewsPage() {
                 articles.map((article) => (
                   <div
                     key={article.id}
-                    className="flex flex-col rounded-md justify-between border border-gray-400 bg-gray-50 overflow-hidden"
+                    className="flex flex-col rounded-md justify-between border border-gray-300 bg-gray-50 overflow-hidden"
                   >
                     {article.featured_image && (
                       <img
@@ -224,7 +224,7 @@ export default function NewsPage() {
                           {article.excerpt}
                         </p>
                       </div>
-                      <div className="flex flex-col space-y-2 justify-between text-xs text-gray-500">
+                      <div className="flex flex-col space-y-2 justify-between text-gray-500">
                         <div className="flex justify-between items-center">
                           <span className="flex items-center gap-1">
                             <CalendarBlankIcon size={12} />
@@ -241,7 +241,7 @@ export default function NewsPage() {
                         <Button
                           onClick={() => handleViewDetail(article.id)}
                           disabled={loadingDetail}
-                          className="w-full py-5 bg-turquoise text-white text-sm hover:bg-turquoise/90 disabled:opacity-50"
+                          className="w-full bg-turquoise text-md hover:bg-turquoise/90 py-5 text-white"
                         >
                           Read More
                         </Button>

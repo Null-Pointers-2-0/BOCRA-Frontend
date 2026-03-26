@@ -7,6 +7,9 @@ import {
   CellTowerIcon,
   MagnifyingGlassIcon,
   CaretDownIcon,
+  UserPlusIcon,
+  LogIcon,
+  SignInIcon,
 } from "@phosphor-icons/react";
 import {
   DropdownMenu,
@@ -16,22 +19,11 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
-  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "./ui/input";
 
 const topLinks = [
   { name: "BOCRA Portal", href: "https://op-web.bocra.org.bw" },
-  {
-    name: "QOS Monitoring",
-    href: "/qos",
-    children: [
-      { name: "Network Coverage", href: "/qos/coverage" },
-      { name: "QoE Review", href: "/qos/qoe" },
-      { name: "Scorecard", href: "/qos/scorecard" },
-    ],
-  },
-  { name: "Licensing", href: "/licensing" },
   {
     name: "Telecom Statistics",
     href: "/telecom-statistics",
@@ -45,10 +37,10 @@ const extraTopLinks = [
 ];
 
 const extraNavLinks = [
-  { name: "ASMS-WebCP", href: "https://registration.bocra.org.bw" },
+  { name: "Login", href: "/login" },
   {
-    name: "License Verification",
-    href: "/verify-license",
+    name: "Signup",
+    href: "/signup",
   },
 ];
 
@@ -114,6 +106,23 @@ const navItems: NavItem[] = [
     children: [
       { name: "News", href: "/news" },
       { name: "Speeches", href: "/speeches" },
+    ],
+  },
+  {
+    name: "Licensing",
+    href: "/licensing",
+    children: [
+      { name: "Apply for a license", href: "/apply-for-license" },
+      { name: "License Verification", href: "/verify-license" },
+    ],
+  },
+  {
+    name: "QOS Monitoring",
+    href: "/qos",
+    children: [
+      { name: "Network Coverage", href: "/qos/coverage" },
+      { name: "QoE Review", href: "/qos/qoe" },
+      { name: "Scorecard", href: "/qos/scorecard" },
     ],
   },
 ];
@@ -326,48 +335,7 @@ export const Navbar = () => {
   const logoSrc = "/bocra-logo.png";
 
   return (
-    <nav className="fixed w-full top-0 z-[99999] flex flex-col bg-white shadow-md">
-      {/* Top utility bar */}
-      <div className="hidden md:flex w-full flex-row px-6 justify-evenly items-center bg-pink text-white">
-        <div className="flex items-center justify-center gap-2 py-2">
-          <label htmlFor="searchBar">Search BOCRA:</label>
-          <div className="relative">
-            <MagnifyingGlassIcon className="absolute left-2 top-1/2 transform -translate-y-1/2 text-white" />
-            <Input
-              type="search"
-              id="searchBar"
-              className="h-7 max-w-sm text-sm border-gray-100 placeholder:text-white pl-8 bg-transparent"
-              placeholder="Search BOCRA..."
-            />
-          </div>
-        </div>
-        <div className="flex flex-row px-6 py-2 space-x-6">
-          {topLinks.map((link) =>
-            link.children ? (
-              <TopBarDropdown key={link.name} link={link} />
-            ) : (
-              <Link
-                className="hover:text-gold transition-colors text-sm flex flex-row items-center gap-1"
-                key={link.name}
-                href={link.href}
-              >
-                {link.name}
-                {link.icon && link.icon}
-              </Link>
-            )
-          )}
-          {extraTopLinks.map((link) => (
-            <Link
-              className="hover:text-gold transition-colors text-sm flex flex-row items-center gap-1 bg-dark-teal text-white px-2 py-1"
-              key={link.name}
-              href={link.href}
-            >
-              {link.name}
-            </Link>
-          ))}
-        </div>
-      </div>
-
+    <nav className="fixed w-full top-0 z-[9] flex flex-col bg-white shadow-md">
       {/* Main nav row */}
       <div className="w-full flex flex-row justify-between md:justify-evenly items-center px-6 py-2">
         <Link href="/">
@@ -381,16 +349,16 @@ export const Navbar = () => {
           ))}
         </div>
 
-        <div className="hidden md:flex md:items-center space-x-4 text-turquoise">
-          {extraNavLinks.map((link) => (
-            <Link
-              className="transition-colors text-sm font-medium bg-turquoise text-white px-3 py-1"
-              key={link.name}
-              href={link.href}
-            >
-              {link.name}
+        <div className="hidden md:flex md:items-center text-sm space-x-4 text-turquoise">
+            <Link href="/login" className="flex items-center gap-2 py-2 px-3 bg-turquoise text-white rounded-md">
+              Login
+              <UserPlusIcon weight="bold"/>
             </Link>
-          ))}
+
+            <Link href="/signup" className="flex items-center gap-2 py-2 px-3 bg-dark-teal text-white rounded-md">
+              Signup
+              <SignInIcon weight="bold"/>
+            </Link>
         </div>
 
         {/* Hamburger */}
@@ -468,6 +436,27 @@ export const Navbar = () => {
                   {link.icon && link.icon}
                 </Link>
               ))}
+            </div>
+
+            {/* Auth Buttons */}
+            <div className="flex flex-col space-y-3 pt-2 border-t-2 border-gray-300">
+              <Link 
+                href="/login" 
+                className="flex items-center gap-2 py-2 px-3 bg-turquoise text-white rounded-md justify-center"
+                onClick={() => setMenuOpen(false)}
+              >
+                <UserPlusIcon weight="bold" size={20} />
+                Login
+              </Link>
+
+              <Link 
+                href="/signup" 
+                className="flex items-center gap-2 py-2 px-3 bg-dark-teal text-white rounded-md justify-center"
+                onClick={() => setMenuOpen(false)}
+              >
+                <SignInIcon weight="bold" size={20} />
+                Signup
+              </Link>
             </div>
           </div>
         </div>

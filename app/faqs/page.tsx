@@ -50,8 +50,8 @@ export default function FAQS() {
   return (
     <>
       <Navbar />
-      <main className="flex flex-col md:justify-center md:items-center min-h-screen px-6 mt-20 md:mt-30">
-        <div className="w-full max-w-5xl space-y-5">
+      <main className="flex flex-col md:justify-center md:items-center min-h-screen px-6 mt-20">
+        <div className="w-full max-w-4xl space-y-5">
           <HeaderSection title="FAQS" description="Frequently Asked Questions" />
           {/* <div className="space-y-2">
             <h1 className="text-3xl font-bold">FAQs</h1>

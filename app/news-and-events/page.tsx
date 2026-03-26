@@ -116,8 +116,8 @@ export default function NewsArchivePage() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen mt-20 md:mt-30">
-        <div className="max-w-6xl mx-auto px-6 space-y-5">
+      <main className="min-h-screen mt-20">
+        <div className="max-w-4xl mx-auto px-6 space-y-5">
           <Link
             href="/media-center"
             className="inline-flex items-center gap-2 text-slate-400 font-bold hover:text-pink transition-colors mb-8 group"

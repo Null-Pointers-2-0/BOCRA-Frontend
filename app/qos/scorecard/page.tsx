@@ -153,10 +153,10 @@ export default function ScorecardPage() {
     <>
       <Navbar />
       <main className="min-h-screen flex flex-col px-6">
-        <div className="mt-20 md:mt-30 max-w-5xl mx-auto w-full space-y-5">
+        <div className="mt-20 max-w-4xl mx-auto w-full space-y-5">
       {/* Header */}
       <div>
-        <HeaderSection title="Live Operator" pinkText="scoreboard" textSize="text-5xl"/>
+        <HeaderSection title="Live Operator" pinkText="scoreboard" textSize="text-2xl"/>
         <p className="text-sm text-gray-500 mt-1">
           Composite performance scores across coverage, QoE, complaints and QoS
           {rankings && (
@@ -243,7 +243,7 @@ function Podium({ rankings }: { rankings: RankingItem[] }) {
               />
             )}
             <div
-              className={`${podiumHeights[i]} w-28 mt-2 flex items-start justify-center pt-3`}
+              className={`${podiumHeights[i]} w-20 mt-2 flex items-start justify-center pt-3`}
               style={{
                 backgroundColor: `${color}50`,
                 borderTop: `3px solid ${color}`,
@@ -511,7 +511,7 @@ function HistoryTab() {
       </div>
 
       {/* Composite Score Trend */}
-      <div className="rounded-xl border border-gray-200 bg-white p-5">
+      <div className="rounded-md border border-gray-200 bg-gray-50 p-4">
         <h3 className="text-lg font-semibold text-gray-900 mb-1">
           Composite Score Trend
         </h3>
@@ -558,9 +558,9 @@ function HistoryTab() {
           return (
             <div
               key={dim.key}
-              className="rounded-xl border border-gray-200 bg-white p-5"
+              className="rounded-md border border-gray-200 bg-gray-50 p-4"
             >
-              <h3 className="text-sm font-semibold text-gray-900 mb-3">
+              <h3 className="text-lg font-semibold text-gray-900 mb-3">
                 {dim.label}
               </h3>
               <ResponsiveContainer width="100%" height={220}>
@@ -675,7 +675,7 @@ function DetailTab({
         <>
           {/* Summary Card */}
           <div
-            className="rounded-xl border border-gray-200 bg-white p-6"
+            className="border border-gray-200 bg-gray-50 p-4"
             style={{ borderLeftWidth: 4, borderLeftColor: color }}
           >
             <div className="flex items-start justify-between">
@@ -808,14 +808,14 @@ function DetailTab({
 
           {/* History Chart */}
           {historyChart.length > 0 && (
-            <div className="rounded-xl border border-gray-200 bg-white p-5">
+            <div className="rounded-md border border-gray-200 bg-gray-50 p-4">
               <h3 className="text-lg font-semibold text-gray-900 mb-1">
                 Score History
               </h3>
               <p className="text-xs text-gray-500 mb-4">
                 {detail.operator_name} — monthly dimension & composite scores
               </p>
-              <ResponsiveContainer width="100%" height={300}>
+              <ResponsiveContainer width="90%" height={300}>
                 <LineChart data={historyChart}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} />
                   <XAxis dataKey="period" tick={{ fontSize: 11 }} />
@@ -893,7 +893,7 @@ function DimensionCard({
   children: React.ReactNode;
 }) {
   return (
-    <div className="rounded-lg border border-gray-100 p-4">
+    <div className="rounded-md border border-gray-100 p-4">
       <div className="flex items-center justify-between mb-2">
         <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
           {label}

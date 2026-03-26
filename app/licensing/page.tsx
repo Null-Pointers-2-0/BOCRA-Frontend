@@ -9,9 +9,9 @@ export default function LicensingPage() {
   return (
     <main>
       <Navbar />
-      <div className="min-h-screen flex flex-col justify-center items-center px-6 mt-20 md:mt-30 space-y-4">
-        <div className="max-w-5xl space-y-5">
-          <HeaderSection title="Licensing" />
+      <div className="min-h-screen flex flex-col justify-center items-center px-6 mt-20 space-y-4">
+        <div className="max-w-4xl space-y-5">
+          <HeaderSection title="Licensing" textSize="text-3xl" />
           <Link href="/apply-for-license">
             <button className="bg-dark-teal text-white px-3 py-1 md:px-6 md:py-2 text-base hover:cursor-pointer">
               Apply for License
@@ -24,7 +24,7 @@ export default function LicensingPage() {
             telecommunications, Internet, radio communications, broadcasting and
             postal.
           </p>
-          <HeaderSection title="Licensing Framework (Telecommunications And Broadcasting)" textSize="text-3xl" />
+          <HeaderSection title="Licensing Framework (Telecommunications And Broadcasting)" textSize="text-lg" />
           <p className="text-lg">
             In 2015, BOCRA commissioned a study to review licensing framework
             and pricing principles for telecommunications services. The study
@@ -69,7 +69,7 @@ export default function LicensingPage() {
             further specified in the appropriate license type to distinguish
             them from major networks.
           </p>
-          <HeaderSection title="Services And Applications Provider (SAP)" textSize="text-3xl" />
+          <HeaderSection title="Services And Applications Provider (SAP)" textSize="text-xl" />
           <p className="text-lg">
             SAPs are non-infrastructure based service providers that provide all
             forms of services and applications to end users using infrastructure
@@ -78,7 +78,7 @@ export default function LicensingPage() {
             deliver a specific function to the end user. The services and
             applications shall not be for broadcasting purposes.
           </p>
-          <HeaderSection title="Content Services Provider (CSP)" textSize="text-3xl" />
+          <HeaderSection title="Content Services Provider (CSP)" textSize="text-xl" />
           <p className="text-lg">
             CSP licensee provides content material in the form of speech or
             other sounds, text, data, images, whether still or moving solely for
@@ -86,7 +86,7 @@ export default function LicensingPage() {
             Subscription TV. NB, State broadcasters do not require license to
             operate.
           </p>
-          <HeaderSection title="Licensing Framework (Postal Services)" textSize="text-3xl" />
+          <HeaderSection title="Licensing Framework (Postal Services)" textSize="text-xl" />
           <h3 className="text-xl font-semibold">
             In August 2015 BOCRA conducted a study to assess the postal market
             and develop appropriate licensing framework. Following conclusion of

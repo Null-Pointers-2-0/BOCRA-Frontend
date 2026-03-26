@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   MapContainer,
   TileLayer,
@@ -9,6 +9,7 @@ import {
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import type { Layer, PathOptions } from "leaflet";
+import dynamic from "next/dynamic";
 
 type CoverageMapProps = {
   districtGeoJSON: GeoJSON.FeatureCollection | null;
@@ -61,6 +62,19 @@ export default function CoverageMap({
   getCoverageLevelColor,
   onDistrictClick,
 }: CoverageMapProps) {
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) {
+    return (
+      <div className="h-full w-full flex items-center justify-center bg-gray-100">
+        <div className="text-gray-500">Loading map...</div>
+      </div>
+    );
+  }
 
   const districtStyle = (feature: GeoJSON.Feature | undefined): PathOptions => {
     if (!feature) return {};
@@ -115,6 +129,7 @@ export default function CoverageMap({
 
   return (
     <MapContainer
+      key={`coverage-map-${selectedOperator}-${showHeatMap}`}
       center={BOTSWANA_CENTER}
       zoom={BOTSWANA_ZOOM}
       className="h-full w-full"

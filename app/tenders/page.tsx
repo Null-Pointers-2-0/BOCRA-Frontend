@@ -529,7 +529,7 @@ export default function TendersPage() {
   return (
     <main>
       <Navbar />
-      <div className="min-h-screen px-6 mt-20 md:mt-30">
+      <div className="min-h-screen px-6 mt-20">
         <div className="space-y-5 w-full max-w-4xl mx-auto">
           <div className="flex flex-col justify-between gap-4">
             <HeaderSection title="Tenders"/>

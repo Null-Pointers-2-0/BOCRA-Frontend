@@ -9,8 +9,8 @@ export default function Internet() {
   return (
     <main>
       <Navbar />
-      <section className="min-h-screen flex flex-col justify-center items-center px-6 mt-20 md:mt-30 space-y-4">
-        <div className="max-w-5xl space-y-5">
+      <section className="min-h-screen flex flex-col justify-center items-center px-6 mt-20 space-y-4">
+        <div className="max-w-4xl space-y-5">
           <HeaderSection title="Internet" />
           <p className="text-lg">
             The preamble of the Communications Regulatory Authority Act 2012

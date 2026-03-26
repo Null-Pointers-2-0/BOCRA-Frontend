@@ -60,14 +60,14 @@ export default function SpeechesPage() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen mt-20 md:mt-30">
-        <div className="max-w-5xl mx-auto px-6">
+      <main className="min-h-screen mt-20">
+        <div className="max-w-4xl mx-auto px-6">
           
           {/* Navigation */}
           <nav className="mb-10">
             <Link 
               href="/media-center" 
-              className="inline-flex items-center gap-2 text-sm font-bold text-slate-400 hover:text-pink transition-colors group"
+              className="inline-flex items-center gap-2 text-sm text-slate-600 hover:text-pink transition-colors group"
             >
               <CaretLeftIcon size={16} weight="bold" className="group-hover:-translate-x-1 transition-transform" />
               Back to Media Center
@@ -80,7 +80,7 @@ export default function SpeechesPage() {
 
             <div className="relative">
               <Input 
-                className="w-full bg-white border border-gray-700 rounded-md py-4 pl-12 pr-4 focus:ring-2 focus:ring-pink/20 focus:border-pink outline-none transition-all font-medium text-slate-600 shadow-sm"
+                className="w-full py-4 pl-12 pr-4 focus:ring-2 focus:ring-pink/20 focus:border-pink outline-none transition-all font-medium text-slate-600 shadow-sm"
                 placeholder="Search by title or speaker..."
                 onChange={(e) => setSearch(e.target.value)}
               />
@@ -92,10 +92,10 @@ export default function SpeechesPage() {
           <div className="grid gap-6">
             {filtered.length > 0 ? (
               filtered.map((speech, i) => (
-                <div key={i} className="group bg-gray-50 border border-gray-600 p-6 rounded-md transition-all flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div key={i} className="group bg-gray-50 border border-gray-300 p-4 rounded-md transition-all flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div className="flex gap-6 items-start">
-                    <div className="hidden sm:flex flex-col items-center justify-center w-20 h-20 rounded-2xl bg-slate-50 text-slate-400 group-hover:bg-pink/5 group-hover:text-pink transition-colors">
-                      <QuotesIcon size={32} weight="duotone" />
+                    <div className="hidden sm:flex flex-col items-center justify-center w-10 h-10 rounded-md bg-slate-50 text-slate-400 group-hover:bg-pink/5 group-hover:text-pink transition-colors">
+                      <QuotesIcon size={32} weight="fill" />
                     </div>
                     
                     <div className="space-y-2">

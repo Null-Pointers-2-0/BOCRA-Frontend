@@ -210,10 +210,10 @@ function Complaints() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen md:justify-center md:items-center flex flex-col px-6">
+      <main className="min-h-screen flex flex-col items-center px-6 mt-20">
         {/* ── File a Complaint ── */}
-        <div className="flex flex-col space-y-4 mt-20 md:mt-30">
-          <HeaderSection title="File a" pinkText="Complaint" description="Submit your complaint against a telecommunications service provider." />
+        <div className="space-y-5 w-full max-w-4xl mx-auto">
+          <HeaderSection title="File a" textSize="text-4xl" pinkText="Complaint" description="Submit your complaint against a telecommunications service provider." />
 
           {submitError && (
             <div className="bg-red-50 border border-red-400 text-red-700 p-3 max-w-4xl">
@@ -223,7 +223,7 @@ function Complaints() {
 
           <form
             onSubmit={handleSubmit}
-            className="bg-gray-50 border border-gray-400 rounded-md p-4 grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl"
+            className="bg-gray-50 border border-gray-300 rounded-md p-4 grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl"
           >
             <div>
               <label htmlFor="name" className="font-medium text-lg">
@@ -391,8 +391,8 @@ function Complaints() {
         </div>
 
         {/* ── Track a Complaint ── */}
-        <div ref={trackSectionRef} className="flex flex-col space-y-4 my-16 w-full max-w-3xl" id="track">
-          <HeaderSection title="Track a" pinkText="Complaint" description="Enter your complaint reference number (e.g. CMP-2026-000001) to check its current status." />
+        <div ref={trackSectionRef} className="flex flex-col space-y-4 w-full max-w-4xl my-16" id="track">
+          <HeaderSection title="Track" pinkText="Complaint" textSize="text-4xl" description="Enter your complaint reference number (e.g. CMP-2026-000001) to check its current status." />
 
           <form onSubmit={handleTrack} className="flex gap-3 items-end max-w-4xl w-full">
             <div className="flex-1">
