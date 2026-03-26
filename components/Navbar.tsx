@@ -326,7 +326,7 @@ export const Navbar = () => {
   const logoSrc = "/bocra-logo.png";
 
   return (
-    <nav className="fixed w-full top-0 z-50 flex flex-col bg-white shadow-md">
+    <nav className="fixed w-full top-0 z-[99999] flex flex-col bg-white shadow-md">
       {/* Top utility bar */}
       <div className="hidden md:flex w-full flex-row px-6 justify-evenly items-center bg-pink text-white">
         <div className="flex items-center justify-center gap-2 py-2">

@@ -1,6 +1,7 @@
 "use client";
 
 import { Footer } from "@/components/Footer";
+import HeaderSection from "@/components/HeaderSection";
 import { Navbar } from "@/components/Navbar";
 
 export default function Telecommunications() {
@@ -9,7 +10,7 @@ export default function Telecommunications() {
       <Navbar />
       <section className="min-h-screen flex flex-col justify-center items-center px-6 mt-20 md:mt-30 space-y-4">
         <div className="max-w-5xl space-y-5">
-          <h1 className="text-3xl md:text-5xl font-bold text-turquoise">Telecommunications</h1>
+          <HeaderSection title="Telecommunications" textSize="text-3xl" />
           <p className="text-lg">
             Under the Communications Regulatory Authority Act 2012, BOCRA has
             authority - within the guidelines established by the 1995

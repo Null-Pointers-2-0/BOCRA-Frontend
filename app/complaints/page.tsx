@@ -18,6 +18,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { submitComplaint, trackComplaint } from "@/lib/api/clients/complaints";
 import type { ComplaintCreateRequest } from "@/lib/api/types/complaints";
 import type { ComplaintTrack } from "@/lib/api/types/complaints";
+import HeaderSection from "@/components/HeaderSection";
 
 const CATEGORIES = [
   { value: "SERVICE_QUALITY", label: "Service Quality" },
@@ -90,7 +91,7 @@ function Complaints() {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.SubmitEvent) => {
     e.preventDefault();
     setSubmitting(true);
     setSubmitError("");
@@ -137,7 +138,7 @@ function Complaints() {
     }
   };
 
-  const handleTrack = async (e: React.FormEvent) => {
+  const handleTrack = async (e: React.SubmitEvent) => {
     e.preventDefault();
     if (!trackRef.trim()) return;
     setTracking(true);
@@ -187,14 +188,14 @@ function Complaints() {
                     trackSectionRef.current?.scrollIntoView({ behavior: "smooth" });
                   }, 100);
                 }}
-                className="bg-turquoise hover:bg-turquoise/90 text-white font-medium py-3"
+                className="bg-turquoise hover:bg-turquoise/90 text-md text-white font-medium py-6"
               >
                 Track This Complaint
               </Button>
               <Button
                 variant="outline"
                 onClick={() => setReferenceNumber("")}
-                className="font-medium py-3"
+                className="font-medium py-6"
               >
                 File Another Complaint
               </Button>
@@ -212,10 +213,7 @@ function Complaints() {
       <main className="min-h-screen md:justify-center md:items-center flex flex-col px-6">
         {/* ── File a Complaint ── */}
         <div className="flex flex-col space-y-4 mt-20 md:mt-30">
-          <h1 className="text-3xl font-semibold">File a Complaint</h1>
-          <p className="text-gray-600 max-w-2xl">
-            Submit your complaint against a telecommunications service provider. All fields marked with <span className="text-pink">*</span> are required.
-          </p>
+          <HeaderSection title="File a" pinkText="Complaint" description="Submit your complaint against a telecommunications service provider." />
 
           {submitError && (
             <div className="bg-red-50 border border-red-400 text-red-700 p-3 max-w-4xl">
@@ -225,7 +223,7 @@ function Complaints() {
 
           <form
             onSubmit={handleSubmit}
-            className="bg-gray-50 border border-gray-400 p-4 grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl"
+            className="bg-gray-50 border border-gray-400 rounded-md p-4 grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl"
           >
             <div>
               <label htmlFor="name" className="font-medium text-lg">
@@ -371,7 +369,7 @@ function Complaints() {
               <Textarea
                 id="description"
                 placeholder="Please provide detailed information about your complaint..."
-                className="border border-gray-400"
+                className="border border-gray-400 rounded-md"
                 rows={6}
                 required
                 value={formData.description}
@@ -393,13 +391,10 @@ function Complaints() {
         </div>
 
         {/* ── Track a Complaint ── */}
-        <div ref={trackSectionRef} className="flex flex-col space-y-4 mt-16 mb-16 max-w-4xl w-full" id="track">
-          <h2 className="text-3xl font-semibold">Track a Complaint</h2>
-          <p className="text-gray-600">
-            Enter your complaint reference number (e.g. CMP-2026-000001) to check its current status.
-          </p>
+        <div ref={trackSectionRef} className="flex flex-col space-y-4 my-16 w-full max-w-3xl" id="track">
+          <HeaderSection title="Track a" pinkText="Complaint" description="Enter your complaint reference number (e.g. CMP-2026-000001) to check its current status." />
 
-          <form onSubmit={handleTrack} className="flex gap-3 items-end">
+          <form onSubmit={handleTrack} className="flex gap-3 items-end max-w-4xl w-full">
             <div className="flex-1">
               <label htmlFor="trackRef" className="font-medium text-lg">
                 Reference Number
@@ -416,7 +411,7 @@ function Complaints() {
             <Button
               type="submit"
               disabled={tracking}
-              className="bg-turquoise hover:bg-turquoise/90 text-white font-medium py-5 px-8 disabled:opacity-50"
+              className="bg-turquoise hover:bg-turquoise/90 rounded-md text-md text-white font-medium py-5 px-8 disabled:opacity-50"
             >
               {tracking ? "Searching..." : "Track"}
             </Button>
@@ -429,14 +424,14 @@ function Complaints() {
           )}
 
           {trackResult && (
-            <div className="bg-gray-50 border border-gray-400 p-6 space-y-4">
+            <div className="bg-gray-50 border rounded-md border-gray-400 p-6 space-y-4">
               <div className="flex justify-between items-start">
                 <div>
                   <p className="text-sm text-gray-500">Reference Number</p>
                   <p className="text-xl font-bold">{trackResult.reference_number}</p>
                 </div>
                 <span
-                  className={`px-3 py-1 text-sm font-medium ${
+                  className={`px-3 py-1 text-xs md:text-sm font-medium ${
                     trackResult.status === "RESOLVED" || trackResult.status === "CLOSED"
                       ? "bg-green-100 text-green-800"
                       : trackResult.is_overdue

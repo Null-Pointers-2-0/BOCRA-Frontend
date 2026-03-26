@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { adminAuth } from "@/lib/api/admin";
+import { Input } from "@/components/ui/input";
 
 export default function Login() {
   const router = useRouter();
@@ -24,7 +25,7 @@ export default function Login() {
       setResponse(JSON.stringify(res, null, 2));
 
       if (res.success) {
-        setTimeout(() => router.push("/test-dashboard"), 1000);
+        setTimeout(() => router.push("/dashboard"), 1000);
       } else {
         setError(res.message || "Login failed");
       }
@@ -40,29 +41,43 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
-      <div className="w-full max-w-md space-y-6">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold">Login</h1>
+    <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 items-center gap-5 justify-center px-6">
+      <div className="hidden w-full h-full md:flex flex-col justify-around p-4">
+        <img
+          src="/bocra-logo.png"
+          alt="BOCRA Logo"
+          className="aspect-rectangle w-32"
+        />
+        <div>
+          <h1 className="text-5xl font-bold">
+            Welcome to the BOCRA User Portal
+          </h1>
+          <p>You'll have to login to access your information</p>
+        </div>
+        <div></div>
+      </div>
+      <div className="w-full h-full space-y-5 flex flex-col justify-center items-center">
+        <div>
+          <h1 className="text-5xl font-bold">Login</h1>
         </div>
 
         <form
           onSubmit={handleSubmit}
-          className="space-y-4 bg-white p-6 rounded-lg shadow"
+          className="space-y-4 bg-gray-50 p-4 w-full max-w-xl rounded-md border border-gray-300"
         >
           <div>
             <label
               htmlFor="emailOrUsername"
               className="block text-sm font-medium mb-1"
             >
-              Email or Username <span className="text-pink">*</span>
+              Email<span className="text-pink">*</span>
             </label>
-            <input
+            <Input
               id="emailOrUsername"
               type="text"
               value={identifier}
               onChange={(e) => setIdentifier(e.target.value)}
-              className="w-full border border-gray-500 px-3 py-2 text-sm"
+              className="w-full"
               placeholder="admin@bocra.org.bw"
               required
             />
@@ -75,45 +90,24 @@ export default function Login() {
             >
               Password <span className="text-pink">*</span>
             </label>
-            <input
+            <Input
               id="password"
               type="password"
               value={password}
               placeholder="Password123..."
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full border border-gray-500 px-3 py-2 text-sm"
+              className=""
               required
             />
           </div>
 
-          <button
+          <Input
             type="submit"
             disabled={loading}
-            className="w-full bg-[#0073ae] text-white py-2 rounded font-medium hover:bg-[#005f8f] disabled:opacity-50"
-          >
-            {loading ? (
-              <div className="flex items-center justify-center">
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                Logging in...
-              </div>
-            ) : (
-              "Login"
-            )}
-          </button>
+            value={loading ? "Logging in" : "Log in"}
+            className="w-full bg-turquoise text-white py-2 rounded-md font-medium disabled:opacity-50"
+          />
         </form>
-
-        {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 p-3 rounded text-sm">
-            <strong>Error:</strong> {error}
-          </div>
-        )}
-
-        {response && (
-          <div className="bg-gray-900 text-green-400 p-4 rounded text-xs overflow-auto max-h-96">
-            <p className="text-gray-400 mb-2 font-medium">Raw API Response:</p>
-            <pre>{response}</pre>
-          </div>
-        )}
       </div>
     </div>
   );

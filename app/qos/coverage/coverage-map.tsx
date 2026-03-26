@@ -61,6 +61,7 @@ export default function CoverageMap({
   getCoverageLevelColor,
   onDistrictClick,
 }: CoverageMapProps) {
+
   const districtStyle = (feature: GeoJSON.Feature | undefined): PathOptions => {
     if (!feature) return {};
     const props = feature.properties || {};

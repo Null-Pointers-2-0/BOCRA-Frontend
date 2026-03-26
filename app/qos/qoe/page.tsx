@@ -42,6 +42,7 @@ import {
   PolarRadiusAxis,
   Radar,
 } from "recharts";
+import HeaderSection from "@/components/HeaderSection";
 
 const QoEHeatmap = dynamic(() => import("./qoe-heatmap"), { ssr: false });
 
@@ -118,14 +119,15 @@ export default function QoEPage() {
     <>
       <Navbar />
       <main className="min-h-screen flex flex-col px-6">
-        <div className="mt-20 md:mt-30 max-w-7xl mx-auto w-full py-8 space-y-6">
+        <div className="mt-20 md:mt-30 max-w-5xl mx-auto w-full space-y-5">
       {/* Header */}
-      <div>
+      <HeaderSection title="Citizen QoE" pinkText="Reporter" textSize="text-4xl" description="Crowdsourced network experience reports from Botswana citizens"/>
+      {/* <div>
         <h1 className="text-2xl font-bold text-gray-900">Citizen QoE Reporter</h1>
         <p className="text-sm text-gray-500 mt-1">
           Crowdsourced network experience reports from Botswana citizens
         </p>
-      </div>
+      </div> */}
 
       {/* KPI Cards */}
       {summary && (
@@ -139,21 +141,21 @@ export default function QoEPage() {
           />
           <KpiCard
             label="Avg Rating"
-            value={summary.avg_rating.toFixed(1)}
+            value={summary.avg_rating ? summary.avg_rating.toFixed(1) : "N/A"}
             sub={<StarRating rating={summary.avg_rating} size={12} />}
             icon={Star}
             color="#f59e0b"
           />
           <KpiCard
             label="Avg Download"
-            value={`${summary.avg_download_mbps.toFixed(1)} Mbps`}
+            value={`${summary.avg_download_mbps ? summary.avg_download_mbps.toFixed(1) : "N/A"} Mbps`}
             sub="Citizen speed tests"
             icon={ArrowDown}
             color="#008265"
           />
           <KpiCard
             label="Avg Latency"
-            value={`${summary.avg_latency_ms.toFixed(0)} ms`}
+            value={`${summary.avg_latency_ms ? summary.avg_latency_ms.toFixed(0) : "N/A"} ms`}
             sub="Network responsiveness"
             icon={Clock}
             color="#6366f1"
@@ -209,7 +211,7 @@ function KpiCard({
   color: string;
 }) {
   return (
-    <div className="rounded-xl border border-gray-200 bg-white p-5">
+    <div className="rounded-md border border-gray-200 bg-gray-50 p-4">
       <div className="flex items-start justify-between">
         <div>
           <p className="text-sm font-medium text-gray-500">{label}</p>
@@ -253,7 +255,7 @@ function DashboardTab({
     <div className="space-y-6">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Operator Breakdown */}
-        <div className="rounded-xl border border-gray-200 bg-white p-5">
+        <div className="rounded-md border border-gray-200 bg-gray-50 p-4">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">
             By Operator
           </h3>
@@ -279,31 +281,31 @@ function DashboardTab({
                       className="font-semibold"
                       style={{ color: ratingColor(op.avg_rating) }}
                     >
-                      {op.avg_rating.toFixed(1)}
+                      {op.avg_rating ? op.avg_rating.toFixed(1) : "N/A"}
                     </span>
                     <StarRating rating={op.avg_rating} size={10} />
                   </div>
                 </div>
                 <div className="grid grid-cols-3 gap-3">
-                  <div className="bg-gray-50 rounded-lg p-2 text-center">
-                    <p className="text-xs text-gray-400">Download</p>
+                  <div className="bg-gray-100 border border-gray-200 rounded-md p-2 text-center">
+                    <p className="text-xs text-gray-900">Download</p>
                     <p className="text-sm font-semibold text-gray-900">
-                      {op.avg_download_mbps.toFixed(1)}
-                      <span className="text-xs font-normal text-gray-400"> Mbps</span>
+                      {op.avg_download_mbps ? op.avg_download_mbps.toFixed(1) : "N/A"}
+                      <span className="text-xs font-normal text-gray-900"> Mbps</span>
                     </p>
                   </div>
-                  <div className="bg-gray-50 rounded-lg p-2 text-center">
-                    <p className="text-xs text-gray-400">Upload</p>
+                  <div className="bg-gray-100 border border-gray-200 rounded-lg p-2 text-center">
+                    <p className="text-xs text-gray-900">Upload</p>
                     <p className="text-sm font-semibold text-gray-900">
-                      {op.avg_upload_mbps.toFixed(1)}
-                      <span className="text-xs font-normal text-gray-400"> Mbps</span>
+                      {op.avg_upload_mbps ? op.avg_upload_mbps.toFixed(1) : "N/A"}
+                      <span className="text-xs font-normal text-gray-900"> Mbps</span>
                     </p>
                   </div>
-                  <div className="bg-gray-50 rounded-lg p-2 text-center">
-                    <p className="text-xs text-gray-400">Latency</p>
+                  <div className="bg-gray-100 border border-gray-200 rounded-md p-2 text-center">
+                    <p className="text-xs text-gray-900">Latency</p>
                     <p className="text-sm font-semibold text-gray-900">
-                      {op.avg_latency_ms.toFixed(0)}
-                      <span className="text-xs font-normal text-gray-400"> ms</span>
+                      {op.avg_latency_ms ? op.avg_latency_ms.toFixed(0) : "N/A"}
+                      <span className="text-xs font-normal text-gray-900"> ms</span>
                     </p>
                   </div>
                 </div>
@@ -313,7 +315,7 @@ function DashboardTab({
         </div>
 
         {/* Rating Distribution */}
-        <div className="rounded-xl border border-gray-200 bg-white p-5">
+        <div className="rounded-md border border-gray-200 bg-gray-50 p-5">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">
             Rating Distribution
           </h3>
@@ -357,12 +359,12 @@ function HeatmapTab() {
   return (
     <div className="space-y-4">
       {/* Filters */}
-      <div className="rounded-xl border border-gray-200 bg-white p-4">
+      <div className="rounded-md border border-gray-200 bg-gray-50 p-4">
         <div className="flex flex-wrap gap-3">
           <select
             value={operatorFilter}
             onChange={(e) => setOperatorFilter(e.target.value)}
-            className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-[#0073ae] focus:ring-1 focus:ring-[#0073ae] outline-none"
+            className="rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-[#0073ae] focus:ring-1 focus:ring-[#0073ae] outline-none"
           >
             <option value="">All Operators</option>
             <option value="MASCOM">Mascom</option>
@@ -372,7 +374,7 @@ function HeatmapTab() {
           <select
             value={connectionFilter}
             onChange={(e) => setConnectionFilter(e.target.value)}
-            className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-[#0073ae] focus:ring-1 focus:ring-[#0073ae] outline-none"
+            className="rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-[#0073ae] focus:ring-1 focus:ring-[#0073ae] outline-none"
           >
             <option value="">All Connections</option>
             {CONNECTION_TYPES.map((t) => (
@@ -412,7 +414,7 @@ function HeatmapTab() {
         </div>
 
         {/* District List */}
-        <div className="rounded-xl border border-gray-200 bg-white overflow-hidden">
+        <div className="rounded-md border border-gray-200 bg-gray-50 overflow-hidden">
           <div className="p-4 border-b border-gray-200">
             <h3 className="text-sm font-semibold text-gray-900">
               District QoE Rankings
@@ -435,8 +437,8 @@ function HeatmapTab() {
                     </p>
                     <p className="text-xs text-gray-400">
                       {d.report_count} reports |{" "}
-                      {d.avg_download_mbps.toFixed(1)} Mbps |{" "}
-                      {d.avg_latency_ms.toFixed(0)} ms
+                      {d.avg_download_mbps ? d.avg_download_mbps.toFixed(1) : "N/A"} Mbps |{" "}
+                      {d.avg_latency_ms ? d.avg_latency_ms.toFixed(0) : "N/A"} ms
                     </p>
                   </div>
                   <div className="text-right">
@@ -444,7 +446,7 @@ function HeatmapTab() {
                       className="text-sm font-bold"
                       style={{ color: ratingColor(d.avg_rating) }}
                     >
-                      {d.avg_rating.toFixed(1)}
+                      {d.avg_rating ? d.avg_rating.toFixed(1) : "N/A"}
                     </span>
                     <StarRating rating={d.avg_rating} size={8} />
                   </div>
@@ -455,7 +457,7 @@ function HeatmapTab() {
       </div>
 
       {/* Legend */}
-      <div className="flex items-center gap-6 text-xs text-gray-500">
+      <div className="flex flex-col md:flex-row md:items-center gap-6 text-xs text-gray-500">
         <span>Circle size = report count</span>
         <span>Circle color = avg rating</span>
         <div className="flex items-center gap-2">
@@ -531,7 +533,7 @@ function TrendsTab() {
           <button
             key={m}
             onClick={() => setMonths(m)}
-            className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+            className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${
               months === m
                 ? "bg-[#0073ae] text-white"
                 : "bg-gray-100 text-gray-600 hover:bg-gray-200"
@@ -543,8 +545,8 @@ function TrendsTab() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="rounded-xl border border-gray-200 bg-white p-5">
-          <h3 className="text-lg font-semibold text-gray-900 mb-1">
+        <div className="rounded-md border border-gray-200 bg-gray-50 p-4">
+          <h3 className="text-lg font-semibold mb-1">
             Average Rating Trend
           </h3>
           <p className="text-xs text-gray-500 mb-4">
@@ -572,8 +574,8 @@ function TrendsTab() {
           </ResponsiveContainer>
         </div>
 
-        <div className="rounded-xl border border-gray-200 bg-white p-5">
-          <h3 className="text-lg font-semibold text-gray-900 mb-1">
+        <div className="rounded-md border border-gray-200 bg-gray-50 p-4">
+          <h3 className="text-lg font-semibold mb-1">
             Download Speed Trend
           </h3>
           <p className="text-xs text-gray-500 mb-4">
@@ -601,8 +603,8 @@ function TrendsTab() {
           </ResponsiveContainer>
         </div>
 
-        <div className="rounded-xl border border-gray-200 bg-white p-5 lg:col-span-2">
-          <h3 className="text-lg font-semibold text-gray-900 mb-1">
+        <div className="rounded-md border border-gray-200 bg-gray-50 p-4 lg:col-span-2">
+          <h3 className="text-lg font-semibold mb-1">
             Report Volume
           </h3>
           <p className="text-xs text-gray-500 mb-4">
@@ -690,7 +692,7 @@ function SpeedsTab() {
         <select
           value={connectionFilter}
           onChange={(e) => setConnectionFilter(e.target.value)}
-          className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-[#0073ae] focus:ring-1 focus:ring-[#0073ae] outline-none"
+          className="rounded-md border border-gray-200 px-3 py-2 text-sm focus:border-[#0073ae] focus:ring-1 focus:ring-[#0073ae] outline-none"
         >
           <option value="">All Connections</option>
           {CONNECTION_TYPES.map((t) => (
@@ -702,7 +704,7 @@ function SpeedsTab() {
             <button
               key={d}
               onClick={() => setDays(d)}
-              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+              className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
                 days === d
                   ? "bg-[#0073ae] text-white"
                   : "bg-gray-100 text-gray-600 hover:bg-gray-200"
@@ -719,7 +721,7 @@ function SpeedsTab() {
         {speedData.operators.map((op) => (
           <div
             key={op.operator}
-            className="rounded-xl border border-gray-200 bg-white p-5"
+            className="rounded-md border bg-gray-50 border-gray-200 p-4"
           >
             <div className="flex items-center gap-2 mb-4">
               <span
@@ -798,8 +800,8 @@ function SpeedsTab() {
       </div>
 
       {/* Radar Comparison */}
-      <div className="rounded-xl border border-gray-200 bg-white p-5">
-        <h3 className="text-lg font-semibold text-gray-900 mb-1">
+      <div className="rounded-md border border-gray-200 bg-gray-50 p-4">
+        <h3 className="text-xl font-semibold mb-1">
           Operator Comparison Radar
         </h3>
         <p className="text-xs text-gray-500 mb-4">

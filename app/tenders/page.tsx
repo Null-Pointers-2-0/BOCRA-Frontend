@@ -8,9 +8,9 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import {
   MagnifyingGlassIcon,
-  ArrowLeft,
-  Clock,
-  DownloadSimple,
+  ArrowLeftIcon,
+  ClockIcon,
+  DownloadSimpleIcon,
 } from "@phosphor-icons/react";
 import {
   getTenders,
@@ -23,6 +23,7 @@ import type {
   TenderDetail,
 } from "@/lib/api/types/tenders";
 import { config } from "@/lib/config";
+import HeaderSection from "@/components/HeaderSection";
 
 type View = "list" | "detail" | "apply" | "success";
 
@@ -177,13 +178,13 @@ export default function TendersPage() {
     return (
       <main>
         <Navbar />
-        <div className="min-h-screen px-6 mt-20 md:mt-30 mb-16">
-          <div className="max-w-3xl mx-auto space-y-6">
+        <div className="min-h-screen px-6 mt-20 md:mt-30">
+          <div className="max-w-4xl mx-auto space-y-5">
             <button
               onClick={() => setView("detail")}
               className="text-turquoise hover:underline text-sm flex items-center gap-1"
             >
-              <ArrowLeft size={16} /> Back to tender details
+              <ArrowLeftIcon size={16} /> Back to tender details
             </button>
 
             <div>
@@ -203,7 +204,7 @@ export default function TendersPage() {
 
             <form
               onSubmit={handleApply}
-              className="bg-gray-50 border border-gray-400 p-6 grid grid-cols-1 md:grid-cols-2 gap-4"
+              className="bg-gray-50 border border-gray-300 rounded-md p-4 grid grid-cols-1 md:grid-cols-2 gap-4"
             >
               <div className="md:col-span-2">
                 <h2 className="text-xl font-semibold border-b border-gray-300 pb-2 mb-2">
@@ -290,7 +291,7 @@ export default function TendersPage() {
                 </label>
                 <Textarea
                   placeholder="Provide a summary of your proposal / bid for this tender..."
-                  className="border border-gray-400"
+                  className="border border-gray-300"
                   rows={6}
                   required
                   value={proposalSummary}
@@ -324,8 +325,8 @@ export default function TendersPage() {
     return (
       <main>
         <Navbar />
-        <div className="min-h-screen px-6 mt-20 md:mt-30 mb-16">
-          <div className="max-w-4xl mx-auto space-y-6">
+        <div className="min-h-screen px-6 mt-20 md:mt-30">
+          <div className="max-w-4xl mx-auto space-y-5">
             <button
               onClick={() => {
                 setView("list");
@@ -333,19 +334,19 @@ export default function TendersPage() {
               }}
               className="text-turquoise hover:underline text-sm flex items-center gap-1"
             >
-              <ArrowLeft size={16} /> Back to Tenders
+              <ArrowLeftIcon size={16} /> Back to Tenders
             </button>
 
             <div>
               <div className="flex gap-2 items-center mb-2">
                 <span
-                  className={`text-xs px-2 py-0.5 font-medium ${
+                  className={`text-xs px-2 rounded-sm py-0.5 font-medium ${
                     statusColors[selectedTender.status] || "bg-gray-200"
                   }`}
                 >
                   {selectedTender.status_display}
                 </span>
-                <span className="text-xs bg-gray-200 px-2 py-0.5 font-medium">
+                <span className="text-xs bg-gray-200 rounded-sm px-2 py-0.5 font-medium">
                   {selectedTender.category_display}
                 </span>
               </div>
@@ -358,8 +359,8 @@ export default function TendersPage() {
             {/* Key dates */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {selectedTender.opening_date && (
-                <div className="border border-gray-300 p-3">
-                  <p className="text-xs text-gray-500">Opening Date</p>
+                <div className="border rounded-md border-gray-300 p-4 bg-gray-50">
+                  <p className="text-md text-gray-900">Opening Date</p>
                   <p className="font-semibold">
                     {new Date(
                       selectedTender.opening_date
@@ -368,8 +369,8 @@ export default function TendersPage() {
                 </div>
               )}
               {selectedTender.closing_date && (
-                <div className="border border-gray-300 p-3">
-                  <p className="text-xs text-gray-500">Closing Date</p>
+                <div className="border rounded-md border-gray-300 p-4 bg-gray-50">
+                  <p className="text-md text-gray-900">Closing Date</p>
                   <p className="font-semibold">
                     {new Date(
                       selectedTender.closing_date
@@ -377,16 +378,16 @@ export default function TendersPage() {
                   </p>
                   {selectedTender.days_until_closing !== null &&
                     selectedTender.days_until_closing > 0 && (
-                      <p className="text-xs text-yellow-600 flex items-center gap-1 mt-1">
-                        <Clock size={14} />{" "}
+                      <p className="text-sm text-yellow-600 flex items-center gap-1 mt-1">
+                        <ClockIcon size={14} />{" "}
                         {selectedTender.days_until_closing} days remaining
                       </p>
                     )}
                 </div>
               )}
               {selectedTender.budget_range && (
-                <div className="border border-gray-300 p-3">
-                  <p className="text-xs text-gray-500">Budget Range</p>
+                <div className="border border-gray-300 rounded-md p-4 bg-gray-50">
+                  <p className="text-md text-gray-900">Budget Range</p>
                   <p className="font-semibold">
                     {selectedTender.budget_range}
                   </p>
@@ -395,8 +396,8 @@ export default function TendersPage() {
             </div>
 
             {/* Description */}
-            <div className="bg-gray-50 border border-gray-400 p-6">
-              <h2 className="text-xl font-semibold mb-3">Description</h2>
+            <div className="bg-gray-50 rounded-md border border-gray-300 p-4">
+              <h2 className="text-2xl font-semibold mb-3">Description</h2>
               <div className="text-gray-700 leading-relaxed whitespace-pre-wrap">
                 {selectedTender.description}
               </div>
@@ -405,8 +406,8 @@ export default function TendersPage() {
             {/* Contact */}
             {(selectedTender.contact_name ||
               selectedTender.contact_email) && (
-              <div className="border border-gray-300 p-4">
-                <h2 className="text-lg font-semibold mb-2">
+              <div className="border rounded-md bg-gray-50 border-gray-300 p-4">
+                <h2 className="text-xl font-semibold mb-2">
                   Contact Information
                 </h2>
                 {selectedTender.contact_name && (
@@ -441,7 +442,7 @@ export default function TendersPage() {
                       href={`${config.apiUrl}/tenders/${selectedTender.id}/documents/${doc.id}/download/`}
                       className="flex items-center gap-2 p-3 border border-gray-300 hover:bg-gray-50"
                     >
-                      <DownloadSimple
+                      <DownloadSimpleIcon
                         size={18}
                         className="text-turquoise"
                       />
@@ -455,12 +456,12 @@ export default function TendersPage() {
             {/* Addenda */}
             {selectedTender.addenda.length > 0 && (
               <div>
-                <h2 className="text-xl font-semibold mb-3">Addenda</h2>
+                <h2 className="text-2xl font-semibold mb-3">Addenda</h2>
                 <div className="space-y-3">
                   {selectedTender.addenda.map((add) => (
                     <div
                       key={add.id}
-                      className="border border-gray-300 p-4"
+                      className="border border-gray-300 p-4 rounded-md bg-gray-50"
                     >
                       <h3 className="font-semibold">{add.title}</h3>
                       <p className="text-sm text-gray-600 mt-1">
@@ -477,7 +478,7 @@ export default function TendersPage() {
 
             {/* Award info */}
             {selectedTender.award && (
-              <div className="bg-blue-50 border border-blue-300 p-4">
+              <div className="bg-blue-50 rounded-md border border-blue-300 p-4">
                 <h2 className="text-lg font-semibold text-blue-800 mb-2">
                   Award Information
                 </h2>
@@ -494,7 +495,7 @@ export default function TendersPage() {
                 {selectedTender.award.award_amount && (
                   <p>
                     <strong>Amount:</strong>{" "}
-                    {selectedTender.award.award_amount}
+                    P {selectedTender.award.award_amount}
                   </p>
                 )}
                 {selectedTender.award.summary && (
@@ -528,15 +529,15 @@ export default function TendersPage() {
   return (
     <main>
       <Navbar />
-      <div className="min-h-screen px-6 mt-20 md:mt-30 mb-16">
-        <div className="space-y-5">
-          <div className="flex flex-col md:flex-row justify-between md:items-center gap-4">
-            <h1 className="text-3xl font-bold">Tenders</h1>
-            <div className="flex gap-3 items-center flex-wrap">
+      <div className="min-h-screen px-6 mt-20 md:mt-30">
+        <div className="space-y-5 w-full max-w-4xl mx-auto">
+          <div className="flex flex-col justify-between gap-4">
+            <HeaderSection title="Tenders"/>
+            <div className="flex flex-col md:flex-row gap-3 items-center">
               <select
                 value={categoryFilter}
                 onChange={(e) => setCategoryFilter(e.target.value)}
-                className="h-10 border border-gray-400 px-3 text-sm bg-white"
+                className="h-10 rounded-md border border-gray-300 px-3 text-sm bg-white w-full"
               >
                 <option value="">All Categories</option>
                 {categories.map((c) => (
@@ -548,7 +549,7 @@ export default function TendersPage() {
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="h-10 border border-gray-400 px-3 text-sm bg-white"
+                className="h-10 rounded-md border border-gray-300 px-3 text-sm bg-white w-full"
               >
                 <option value="">All Statuses</option>
                 <option value="OPEN">Open</option>
@@ -556,11 +557,11 @@ export default function TendersPage() {
                 <option value="CLOSED">Closed</option>
                 <option value="AWARDED">Awarded</option>
               </select>
-              <div className="relative">
+              <div className="relative w-full">
                 <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
                 <Input
                   type="search"
-                  className="h-10 md:min-w-72 text-lg rounded-none border-gray-400 placeholder:text-gray-900 pl-10"
+                  className="h-10 md:min-w-72 text-lg border-gray-300 placeholder:text-gray-900 pl-10"
                   placeholder="Search tenders..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
@@ -579,18 +580,18 @@ export default function TendersPage() {
                 tenders.map((tender) => (
                   <div
                     key={tender.id}
-                    className="p-4 flex flex-col justify-between border border-gray-400 bg-gray-50 space-y-2"
+                    className="p-4 flex flex-col rounded-md justify-between border border-gray-300 bg-gray-50 space-y-2"
                   >
                     <div>
                       <div className="flex gap-2 flex-wrap">
                         <span
-                          className={`text-xs px-2 py-0.5 font-medium ${
+                          className={`text-xs px-2 rounded-sm py-0.5 font-medium ${
                             statusColors[tender.status] || "bg-gray-200"
                           }`}
                         >
                           {tender.status_display}
                         </span>
-                        <span className="text-xs bg-gray-200 px-2 py-0.5 font-medium">
+                        <span className="text-xs bg-gray-200 rounded-sm px-2 py-0.5 font-medium">
                           {tender.category_display}
                         </span>
                       </div>
@@ -605,7 +606,7 @@ export default function TendersPage() {
                     <div className="text-sm text-gray-500 space-y-1">
                       {tender.closing_date && (
                         <p className="flex items-center gap-1">
-                          <Clock size={14} />
+                          <ClockIcon size={14} />
                           Closes:{" "}
                           {new Date(
                             tender.closing_date
@@ -623,7 +624,7 @@ export default function TendersPage() {
                     <Button
                       onClick={() => handleViewDetail(tender.id)}
                       disabled={loadingDetail}
-                      className="w-full bg-turquoise hover:bg-turquoise/90 text-white"
+                      className="w-full bg-turquoise text-md hover:bg-turquoise/90 py-5 text-white"
                     >
                       View Details
                     </Button>

@@ -71,9 +71,9 @@ export default function QoEHeatmap({ districts }: QoEHeatmapProps) {
               <div className="space-y-0.5 text-gray-600">
                 <p>Reports: <strong>{d.report_count}</strong></p>
                 <p>Avg Rating: <strong>{d.avg_rating.toFixed(1)}</strong> / 5</p>
-                <p>Download: <strong>{d.avg_download_mbps.toFixed(1)}</strong> Mbps</p>
-                <p>Upload: <strong>{d.avg_upload_mbps.toFixed(1)}</strong> Mbps</p>
-                <p>Latency: <strong>{d.avg_latency_ms.toFixed(0)}</strong> ms</p>
+                <p>Download: <strong>{d.avg_download_mbps ? d.avg_download_mbps.toFixed(1) : "N/A"}</strong> Mbps</p>
+                <p>Upload: <strong>{d.avg_upload_mbps ? d.avg_upload_mbps.toFixed(1) : "N/A"}</strong> Mbps</p>
+                <p>Latency: <strong>{d.avg_latency_ms ? d.avg_latency_ms.toFixed(0) : "N/A"}</strong> ms</p>
               </div>
             </div>
           </Tooltip>

@@ -25,6 +25,7 @@ import {
   BarChart3,
   Map,
 } from "lucide-react";
+import HeaderSection from "@/components/HeaderSection";
 
 const CoverageMap = dynamic(() => import("./coverage-map"), { ssr: false });
 
@@ -136,13 +137,10 @@ export default function CoveragePage() {
     <>
       <Navbar />
       <main className="min-h-screen flex flex-col px-6">
-        <div className="mt-20 md:mt-30 max-w-7xl mx-auto w-full py-8 space-y-6">
+        <div className="mt-20 md:mt-30 max-w-5xl mx-auto w-full space-y-5">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Network Coverage</h1>
-        <p className="text-sm text-gray-500 mt-1">
-          Interactive coverage map for Botswana telecommunications operators
-        </p>
+        <HeaderSection title="Network" textSize="text-5xl" pinkText="Coverage" description="Interactive coverage map for Botswana telecommunications operators"/>
         {summary && (
           <div className="flex items-center gap-2 text-sm text-gray-500 mt-1">
             <Signal className="h-4 w-4" />
@@ -154,7 +152,7 @@ export default function CoveragePage() {
       {/* KPI Cards */}
       {summary && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="rounded-xl border border-gray-200 bg-white p-5">
+          <div className="rounded-md border border-gray-200 bg-gray-50 p-4">
             <div className="flex items-start justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-500">
@@ -172,7 +170,7 @@ export default function CoveragePage() {
           {summary.by_operator.map((op) => (
             <div
               key={op.operator}
-              className="rounded-xl border border-gray-200 bg-white p-5"
+              className="rounded-md border border-gray-200 bg-gray-50 p-4"
             >
               <div className="flex items-start justify-between">
                 <div>
@@ -230,7 +228,7 @@ export default function CoveragePage() {
           {/* Sidebar Controls */}
           <div className="lg:col-span-1 space-y-4">
             {/* Technology */}
-            <div className="rounded-xl border border-gray-200 bg-white p-4">
+            <div className="rounded-md border border-gray-200 bg-gray-50 p-4">
               <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
                 <Layers className="h-4 w-4" />
                 Technology
@@ -240,7 +238,7 @@ export default function CoveragePage() {
                   <button
                     key={tech}
                     onClick={() => setSelectedTech(tech)}
-                    className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                    className={`px-3 py-1.5 rounded-md border border-gray-300 text-sm font-medium transition-colors ${
                       selectedTech === tech
                         ? "bg-[#0073ae] text-white"
                         : "bg-gray-100 text-gray-600 hover:bg-gray-200"
@@ -253,7 +251,7 @@ export default function CoveragePage() {
             </div>
 
             {/* Operator */}
-            <div className="rounded-xl border border-gray-200 bg-white p-4">
+            <div className="rounded-md border border-gray-200 bg-gray-50 p-4">
               <h3 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
                 <Signal className="h-4 w-4" />
                 Operator
@@ -296,7 +294,7 @@ export default function CoveragePage() {
             </div>
 
             {/* Map Layers */}
-            <div className="rounded-xl border border-gray-200 bg-white p-4">
+            <div className="rounded-md border border-gray-200 bg-gray-50 p-4">
               <h3 className="text-sm font-semibold text-gray-900 mb-3">
                 Map Layers
               </h3>
@@ -363,7 +361,7 @@ export default function CoveragePage() {
             </div>
 
             {/* Legend */}
-            <div className="rounded-xl border border-gray-200 bg-white p-4">
+            <div className="rounded-md border border-gray-200 bg-gray-50 p-4">
               <h3 className="text-sm font-semibold text-gray-900 mb-3">Coverage Legend</h3>
               <div className="space-y-2">
                 {[

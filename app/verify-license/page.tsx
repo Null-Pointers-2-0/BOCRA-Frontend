@@ -8,10 +8,11 @@ import { Button } from "@/components/ui/button";
 import { MagnifyingGlassIcon } from "@phosphor-icons/react";
 import { verifyLicence } from "@/lib/api/clients/licensing";
 import type { LicenceVerify } from "@/lib/api/types/licensing";
+import HeaderSection from "@/components/HeaderSection";
 
 export default function VerifyLicensePage() {
   const [searchType, setSearchType] = useState<"licence_no" | "company">(
-    "licence_no"
+    "licence_no",
   );
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(false);
@@ -53,19 +54,19 @@ export default function VerifyLicensePage() {
   return (
     <main>
       <Navbar />
-      <div className="min-h-screen px-6 mt-20 md:mt-30 mb-16">
-        <div className="max-w-3xl mx-auto space-y-8">
-          <div>
-            <h1 className="text-3xl font-bold">License Verification</h1>
-            <p className="text-gray-600 mt-2">
-              Verify the validity of a BOCRA licence by entering a licence
-              number or company name.
-            </p>
-          </div>
+      <div className="min-h-screen px-6 mt-20 md:mt-30">
+        <div className="max-w-3xl mx-auto space-y-5">
+          <HeaderSection
+            title="License"
+            pinkText="Verification"
+            textSize="text-5xl"
+            description="Verify the validity of a BOCRA licence by entering a licence
+              number or company name."
+          />
 
           <form
             onSubmit={handleSearch}
-            className="bg-gray-50 border border-gray-400 p-6 space-y-4"
+            className="bg-gray-50 border border-gray-400 p-4 rounded-md space-y-4"
           >
             <div className="flex gap-4">
               <label className="flex items-center gap-2 cursor-pointer">
@@ -100,8 +101,8 @@ export default function VerifyLicensePage() {
               </label>
             </div>
 
-            <div className="flex gap-2">
-              <div className="relative flex-1">
+            <div className="flex flex-col md:flex-row space-y-4 gap-2">
+              <div className="relative rounded-md flex-1">
                 <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
                 <Input
                   type="text"
@@ -119,7 +120,7 @@ export default function VerifyLicensePage() {
               <Button
                 type="submit"
                 disabled={loading || !query.trim()}
-                className="bg-turquoise hover:bg-turquoise/90 text-white h-12 px-8 text-lg disabled:opacity-50"
+                className="bg-turquoise rounded-md hover:bg-turquoise/90 text-white py-6 px-8 text-lg disabled:opacity-50"
               >
                 {loading ? "Searching..." : "Verify"}
               </Button>
@@ -172,9 +173,7 @@ export default function VerifyLicensePage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <div>
                       <p className="text-sm text-gray-500">Organisation</p>
-                      <p className="font-medium">
-                        {licence.organisation_name}
-                      </p>
+                      <p className="font-medium">{licence.organisation_name}</p>
                     </div>
                     <div>
                       <p className="text-sm text-gray-500">Licence Type</p>

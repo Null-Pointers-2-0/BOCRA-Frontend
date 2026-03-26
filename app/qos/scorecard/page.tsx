@@ -38,6 +38,7 @@ import {
   PolarRadiusAxis,
   Radar,
 } from "recharts";
+import HeaderSection from "@/components/HeaderSection";
 
 type Tab = "leaderboard" | "history" | "detail";
 
@@ -152,12 +153,10 @@ export default function ScorecardPage() {
     <>
       <Navbar />
       <main className="min-h-screen flex flex-col px-6">
-        <div className="mt-20 md:mt-30 max-w-7xl mx-auto w-full py-8 space-y-6">
+        <div className="mt-20 md:mt-30 max-w-5xl mx-auto w-full space-y-5">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">
-          Live Operator Scorecard
-        </h1>
+        <HeaderSection title="Live Operator" pinkText="scoreboard" textSize="text-5xl"/>
         <p className="text-sm text-gray-500 mt-1">
           Composite performance scores across coverage, QoE, complaints and QoS
           {rankings && (
@@ -244,9 +243,9 @@ function Podium({ rankings }: { rankings: RankingItem[] }) {
               />
             )}
             <div
-              className={`${podiumHeights[i]} w-28 rounded-t-xl mt-2 flex items-start justify-center pt-3`}
+              className={`${podiumHeights[i]} w-28 mt-2 flex items-start justify-center pt-3`}
               style={{
-                backgroundColor: `${color}20`,
+                backgroundColor: `${color}50`,
                 borderTop: `3px solid ${color}`,
               }}
             >
@@ -352,7 +351,7 @@ function LeaderboardTab({
           return (
             <div
               key={r.id}
-              className="rounded-xl border border-gray-200 bg-white p-5 hover:border-gray-300 transition-colors cursor-pointer"
+              className="border border-gray-200 bg-gray-50 p-4 hover:border-gray-300 transition-colors cursor-pointer"
               onClick={() => onViewDetail(r.operator_code)}
               style={{ borderLeftWidth: 4, borderLeftColor: color }}
             >
@@ -416,11 +415,11 @@ function LeaderboardTab({
       </div>
 
       {/* Radar Comparison */}
-      <div className="rounded-xl border border-gray-200 bg-white p-5">
-        <h3 className="text-lg font-semibold text-gray-900 mb-1">
+      <div className="rounded-md border border-gray-200 bg-gray-50 p-4">
+        <h3 className="text-2xl font-semibold text-gray-900 mb-1">
           Dimension Comparison
         </h3>
-        <p className="text-xs text-gray-500 mb-4">
+        <p className="text-md text-gray-500 mb-4">
           All scores on a 0-100 scale
         </p>
         <ResponsiveContainer width="100%" height={350}>
@@ -700,10 +699,10 @@ function DetailTab({
                 color={DIMENSION_COLORS.COVERAGE}
               >
                 <p className="text-xs text-gray-500">
-                  {latest.metadata.coverage.area_count} coverage areas
+                  {latest.metadata.coverage?.area_count ? latest.metadata.coverage.area_count : "N/A"} coverage areas
                 </p>
                 <p className="text-xs text-gray-500">
-                  Avg: {latest.metadata.coverage.avg_coverage_pct.toFixed(1)}%
+                  Avg: {latest.metadata.coverage?.avg_coverage_pct ? latest.metadata.coverage.avg_coverage_pct.toFixed(1) : "N/A"}%
                 </p>
               </DimensionCard>
 
@@ -714,10 +713,10 @@ function DetailTab({
                 color={DIMENSION_COLORS.QOE}
               >
                 <p className="text-xs text-gray-500">
-                  {latest.metadata.qoe.report_count} citizen reports
+                  {latest.metadata.qoe?.report_count ? latest.metadata.qoe.report_count : "N/A"} citizen reports
                 </p>
                 <p className="text-xs text-gray-500">
-                  Avg rating: {latest.metadata.qoe.avg_rating.toFixed(2)} / 5
+                  Avg rating: {latest.metadata.qoe?.avg_rating ? latest.metadata.qoe.avg_rating.toFixed(2) : "N/A"} / 5
                 </p>
               </DimensionCard>
 
@@ -728,11 +727,11 @@ function DetailTab({
                 color={DIMENSION_COLORS.COMPLAINTS}
               >
                 <p className="text-xs text-gray-500">
-                  {latest.metadata.complaints.complaint_count} complaints
+                  {latest.metadata.complaints?.complaint_count} complaints
                 </p>
                 <p className="text-xs text-gray-500">
-                  {latest.metadata.complaints.resolved_count} resolved (
-                  {latest.metadata.complaints.resolution_rate_pct.toFixed(0)}%)
+                  {latest.metadata.complaints?.resolved_count} resolved (
+                  {latest.metadata.complaints?.resolution_rate_pct ? latest.metadata.complaints.resolution_rate_pct.toFixed(0) : "N/A"}%)
                 </p>
               </DimensionCard>
 
@@ -743,13 +742,13 @@ function DetailTab({
                 color={DIMENSION_COLORS.QOS}
               >
                 <p className="text-xs text-gray-500">
-                  {latest.metadata.qos.metric_count} QoS metrics
+                  {latest.metadata.qos?.metric_count ? latest.metadata.qos.metric_count : "N/A"} QoS metrics
                 </p>
               </DimensionCard>
             </div>
 
             {/* QoS Metric Detail table */}
-            {latest.metadata.qos.metrics.length > 0 && (
+            {latest.metadata.qos?.metrics.length && latest.metadata.qos.metrics.length > 0 ? (
               <div className="mt-6 pt-4 border-t border-gray-100">
                 <h4 className="text-sm font-semibold text-gray-700 mb-3">
                   QoS Metric Compliance
@@ -804,7 +803,7 @@ function DetailTab({
                   </table>
                 </div>
               </div>
-            )}
+            ): (<div>NULL</div>)}
           </div>
 
           {/* History Chart */}
