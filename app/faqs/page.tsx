@@ -1,6 +1,7 @@
 "use client";
 
 import { Footer } from "@/components/Footer";
+import HeaderSection from "@/components/HeaderSection";
 import { Navbar } from "@/components/Navbar";
 import {
   Accordion,
@@ -50,11 +51,12 @@ export default function FAQS() {
     <>
       <Navbar />
       <main className="flex flex-col md:justify-center md:items-center min-h-screen px-6 mt-20 md:mt-30">
-        <div className="w-full max-w-6xl space-y-5">
-          <div className="space-y-2">
+        <div className="w-full max-w-5xl space-y-5">
+          <HeaderSection title="FAQS" description="Frequently Asked Questions" />
+          {/* <div className="space-y-2">
             <h1 className="text-3xl font-bold">FAQs</h1>
             <p className="text-lg text-gray-600">Frequently Asked Questions</p>
-          </div>
+          </div> */}
 
           <Accordion type="single" collapsible className="w-full space-y-5">
             {faqs.map((faq, index) => (

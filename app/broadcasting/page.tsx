@@ -1,6 +1,7 @@
 "use client";
 
 import { Footer } from "@/components/Footer";
+import HeaderSection from "@/components/HeaderSection";
 import { Navbar } from "@/components/Navbar";
 import Link from "next/link";
 
@@ -10,7 +11,7 @@ export default function Broadcasting() {
       <Navbar />
       <section className="min-h-screen flex flex-col justify-center items-center px-6 mt-20 md:mt-30 space-y-4">
         <div className="max-w-5xl space-y-5">
-          <h1 className="text-5xl font-bold text-dark-teal">Broadcasting</h1>
+          <HeaderSection title="Broadcasting" textSize="text-4xl" />
           <p className="text-lg">
             The CRA Act mandates BOCRA to regulate all broadcasting;
             subscription management services and re-broadcasting activities save

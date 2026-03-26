@@ -127,6 +127,7 @@ export type ComplaintCreateRequest = {
   category: ComplaintCategory;
   subject: string;
   description: string;
+  priority?: ComplaintPriority;
 };
 
 export type ComplaintStatusUpdateRequest = {

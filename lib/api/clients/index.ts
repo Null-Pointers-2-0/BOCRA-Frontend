@@ -5,3 +5,7 @@ export * as clientPublications from "./publications";
 export * as clientTenders from "./tenders";
 export * as clientNews from "./news";
 export * as clientAnalytics from "./analytics";
+export * as clientDomains from "./domains";
+export { coveragesClient } from "./coverages";
+export { qoeClient } from "./qoe";
+export { scorecardClient } from "./scorecard";

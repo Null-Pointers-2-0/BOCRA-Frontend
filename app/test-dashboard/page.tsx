@@ -21,7 +21,7 @@ export default function TestDashboardPage() {
   useEffect(() => {
     const { accessToken } = getTokens();
     if (!accessToken) {
-      router.push("/test-login");
+      router.push("/login");
       return;
     }
     loadAll();
@@ -64,7 +64,7 @@ export default function TestDashboardPage() {
 
   function handleLogout() {
     clearTokens();
-    router.push("/test-login");
+    router.push("/login");
   }
 
   if (loading) {

@@ -1,6 +1,7 @@
 "use client";
 
 import { Footer } from "@/components/Footer";
+import HeaderSection from "@/components/HeaderSection";
 import { Navbar } from "@/components/Navbar";
 import Link from "next/link";
 
@@ -10,7 +11,7 @@ export default function Postal() {
       <Navbar />
       <section className="min-h-screen flex flex-col justify-center items-center px-6 mt-20 md:mt-30 space-y-4">
         <div className="max-w-5xl space-y-5">
-          <h1 className="text-5xl font-bold text-pink">Postal</h1>
+          <HeaderSection title="postal"/>
           <p className="text-lg">
             The CRA Act, 2012 ushered in a new dawn of regulation for the postal
             sector as BOCRA assumed the mandate of supervising the provision of
@@ -30,7 +31,7 @@ export default function Postal() {
             country and Licence Application Requirements for licensing of
             courier service providers.
           </p>
-          <h1 className="text-3xl font-semibold text-pink">Current Market Structure</h1>
+          <HeaderSection title="Current Market Structure" textSize="text-3xl"/>
           <h3 className="text-xl font-semibold">
             The Botswana postal market comprises of two main categories of
             postal services which include the following:
@@ -51,9 +52,7 @@ export default function Postal() {
               provide these services on a commercial basis.
             </li>
           </ol>
-          <h1 className="text-3xl font-semibold text-pink">
-            Licensing of Postal Operators
-          </h1>
+          <HeaderSection title="Licensing of Postal Operators" textSize="text-3xl"/>
           <h3 className="text-xl font-semibold">
             The licensing framework for the Postal Sector in Botswana comprises
             of two licence categories as outlined below:
@@ -76,17 +75,16 @@ export default function Postal() {
               may be renewed upon expiry of the 10-year licence period.
             </li>
           </ol>
-          <h1 className="text-xl font-semibold">
+          <HeaderSection title="POSTAL SERVICE OPERATORS OFFERING INTERCONNECTION" textSize="text-3xl"/>
+          <h3 className="text-xl font-semibold">
             <Link
               href="https://www.bocra.org.bw/sites/default/files/RIOs_Final_Public_Notice.pdf"
               className="text-turquoise underline"
             >
               POSTAL SERVICE OPERATORS OFFERING INTERCONNECTION
             </Link>
-          </h1>
-          <h1 className="text-3xl font-semibold text-pink">
-            Designation of a Public Postal Operator
-          </h1>
+          </h3>
+          <HeaderSection title="Designation of a Public Postal Operator" textSize="text-3xl"/>
           <p>
             Pursuant to Section 67 of the CRA Act, the Minister responsible for
             Communications shall, on the recommendation of the Authority

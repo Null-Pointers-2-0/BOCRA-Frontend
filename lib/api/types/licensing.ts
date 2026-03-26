@@ -5,15 +5,40 @@ export type LicenceType = {
   id: string;
   name: string;
   code: string;
+  sector: string | null;
+  sector_name: string | null;
+  sector_code: string | null;
   description: string;
   fee_amount: string;
+  annual_fee: string | null;
+  renewal_fee: string | null;
   fee_currency: string;
   validity_period_months: number;
+  is_domain_applicable: boolean;
+  sort_order: number;
   is_active: boolean;
 };
 
 export type LicenceTypeDetail = LicenceType & {
   requirements: string;
+  created_at: string;
+  updated_at: string;
+};
+
+// ── Licence Sector ──
+export type LicenceSector = {
+  id: string;
+  name: string;
+  code: string;
+  description: string;
+  icon: string;
+  sort_order: number;
+  is_active: boolean;
+  type_count: number;
+};
+
+export type LicenceSectorDetail = LicenceSector & {
+  licence_types: LicenceType[];
   created_at: string;
   updated_at: string;
 };

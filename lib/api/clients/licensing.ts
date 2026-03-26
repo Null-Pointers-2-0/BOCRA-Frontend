@@ -1,6 +1,8 @@
 import { apiClient } from "../client";
 import type { ApiResponse, PaginatedData } from "../types/common";
 import type {
+  LicenceSector,
+  LicenceSectorDetail,
   LicenceType,
   LicenceTypeDetail,
   ApplicationListItem,
@@ -12,6 +14,19 @@ import type {
   LicenceDetail,
   LicenceVerify,
 } from "../types/licensing";
+
+// ── Public: Sectors ──
+export async function getLicenceSectors(): Promise<
+  ApiResponse<LicenceSector[]>
+> {
+  return apiClient<LicenceSector[]>("/licensing/sectors/");
+}
+
+export async function getLicenceSector(
+  id: string
+): Promise<ApiResponse<LicenceSectorDetail>> {
+  return apiClient<LicenceSectorDetail>(`/licensing/sectors/${id}/`);
+}
 
 // ── Public: Licence Types ──
 export async function getLicenceTypes(): Promise<
@@ -27,10 +42,10 @@ export async function getLicenceType(
 }
 
 export async function verifyLicence(
-  licenceNumber: string
-): Promise<ApiResponse<LicenceVerify>> {
-  return apiClient<LicenceVerify>("/licensing/verify/", {
-    params: { licence_number: licenceNumber },
+  params: { licence_no?: string; company?: string }
+): Promise<ApiResponse<LicenceVerify[]>> {
+  return apiClient<LicenceVerify[]>("/licensing/verify/", {
+    params: params as Record<string, string | number | boolean | undefined>,
   });
 }
 

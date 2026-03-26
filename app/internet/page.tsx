@@ -1,6 +1,7 @@
 "use client";
 
 import { Footer } from "@/components/Footer";
+import HeaderSection from "@/components/HeaderSection";
 import { Navbar } from "@/components/Navbar";
 import Link from "next/link";
 
@@ -10,7 +11,7 @@ export default function Internet() {
       <Navbar />
       <section className="min-h-screen flex flex-col justify-center items-center px-6 mt-20 md:mt-30 space-y-4">
         <div className="max-w-5xl space-y-5">
-          <h1 className="text-5xl font-bold text-gold">Internet</h1>
+          <HeaderSection title="Internet" />
           <p className="text-lg">
             The preamble of the Communications Regulatory Authority Act 2012
             suggests that BOCRA is responsible for the regulation of the
@@ -40,9 +41,7 @@ export default function Internet() {
             requirements to be adopted by both the Hospitality Facilities and
             Service Providers.
           </p>
-          <h1 className="text-3xl font-semibold text-gold">
-            Wholesale Internet Bandwidth Prices
-          </h1>
+          <HeaderSection title="Wholesale Internet Bandwidth Prices" textSize="text-2xl"/>
           <p className="text-lg">
             Wholesale Internet bandwidth prices/tariffs have been declining. The
             decline in wholesale Internet bandwidth prices is influenced by

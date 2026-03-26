@@ -158,3 +158,26 @@ export type PublicTenderListParams = {
   ordering?: string;
   page?: number;
 };
+
+// ── Tender Application ──
+export type TenderApplicationListItem = {
+  id: string;
+  reference_number: string;
+  tender: string;
+  tender_title: string;
+  tender_reference: string;
+  company_name: string;
+  status: string;
+  status_display: string;
+  created_at: string;
+};
+
+export type TenderApplicationCreateRequest = {
+  tender: string;
+  company_name: string;
+  company_registration?: string;
+  contact_person: string;
+  contact_email: string;
+  contact_phone?: string;
+  proposal_summary: string;
+};
