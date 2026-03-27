@@ -162,8 +162,8 @@ export default function PublicationsPage() {
   return (
     <main>
       <Navbar />
-      <div className="min-h-screen px-6 mt-20 md:mt-30 flex justify-center">
-        <div className="space-y-5 w-full items-center max-w-5xl">
+      <div className="min-h-screen px-6 mt-20 flex justify-center">
+        <div className="space-y-5 w-full items-center max-w-4xl">
           <div className="flex flex-col justify-between gap-4">
             <HeaderSection title="Publications" textSize="text-5xl" />
             <div className="flex flex-col md:flex-row gap-3 items-center">

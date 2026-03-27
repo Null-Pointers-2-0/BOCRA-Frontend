@@ -74,11 +74,13 @@ export default function DomainRegistry() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen md:justify-center md:items-center flex flex-col px-6">
+      <main className="min-h-screen md:justify-center mt-20 md:items-center flex flex-col px-6">
         {/* ── Hero Section ── */}
-        <div className="flex flex-col space-y-4 mt-20 md:mt-30 max-w-5xl">
+        <div className="flex flex-col space-y-4 max-w-4xl">
           <HeaderSection
-            title=".bw Domain Registry"
+            title=".bw Domain"
+            pinkText="Registry"
+            textSize="text-3xl"
             description="Check if your desired .bw domain name is available for registration."
           />
 

@@ -137,10 +137,10 @@ export default function CoveragePage() {
     <>
       <Navbar />
       <main className="min-h-screen flex flex-col px-6">
-        <div className="mt-20 md:mt-30 max-w-5xl mx-auto w-full space-y-5">
+        <div className="mt-20 max-w-4xl mx-auto w-full space-y-5">
       {/* Header */}
       <div>
-        <HeaderSection title="Network" textSize="text-5xl" pinkText="Coverage" description="Interactive coverage map for Botswana telecommunications operators"/>
+        <HeaderSection title="Network" textSize="text-2xl" pinkText="Coverage" description="Interactive coverage map for Botswana telecommunications operators"/>
         {summary && (
           <div className="flex items-center gap-2 text-sm text-gray-500 mt-1">
             <Signal className="h-4 w-4" />
@@ -151,7 +151,7 @@ export default function CoveragePage() {
 
       {/* KPI Cards */}
       {summary && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="rounded-md border border-gray-200 bg-gray-50 p-4">
             <div className="flex items-start justify-between">
               <div>
@@ -162,8 +162,8 @@ export default function CoveragePage() {
                   {summary.national_avg_coverage.toFixed(1)}%
                 </p>
               </div>
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#0073ae]/10">
-                <Signal className="h-5 w-5 text-[#0073ae]" />
+              <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#0073ae]/10">
+                <Signal className="h-3 w-3 text-[#0073ae]" />
               </div>
             </div>
           </div>
@@ -186,13 +186,13 @@ export default function CoveragePage() {
                   </p>
                 </div>
                 <div
-                  className="flex h-10 w-10 items-center justify-center rounded-lg"
+                  className="flex h-6 w-6 items-center justify-center rounded-full"
                   style={{
                     backgroundColor: `${OPERATOR_COLORS[op.operator] || "#6b7280"}15`,
                   }}
                 >
                   <TrendingUp
-                    className="h-5 w-5"
+                    className="h-3 w-3"
                     style={{
                       color: OPERATOR_COLORS[op.operator] || "#6b7280",
                     }}
@@ -210,7 +210,7 @@ export default function CoveragePage() {
           <button
             key={tab.key}
             onClick={() => setActiveTab(tab.key)}
-            className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors ${
+            className={`flex items-center gap-2 px-4 py-2.5 text-xs md:text-sm border-b-2 transition-colors ${
               activeTab === tab.key
                 ? "border-[#0073ae] text-[#0073ae]"
                 : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"

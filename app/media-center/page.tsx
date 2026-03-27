@@ -33,8 +33,8 @@ export default function MediaCenter() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen mt-20 md:mt-30">
-        <div className="max-w-6xl mx-auto px-6 space-y-20">
+      <main className="min-h-screen mt-20">
+        <div className="max-w-4xl mx-auto px-6 space-y-20">
           {/* Section 1: Header & Strategy */}
           <section className="space-y-8">
             <HeaderSection title="Media" pinkText="Center" />

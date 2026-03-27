@@ -43,7 +43,7 @@ export default function Tariffs() {
   return (
     <>
       <Navbar />
-      <main className="flex flex-col md:items-center min-h-screen px-6 mt-20 md:mt-30">
+      <main className="flex flex-col md:items-center min-h-screen px-6 mt-20">
         <div className="w-full max-w-4xl space-y-5">
           <HeaderSection
             title="Tariffs"

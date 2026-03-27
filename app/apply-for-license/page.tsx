@@ -26,6 +26,7 @@ import {
 } from "@/lib/api/clients/domains";
 import type { LicenceType } from "@/lib/api/types/licensing";
 import type { DomainZone, DomainAvailability } from "@/lib/api/types/domains";
+import HeaderSection from "@/components/HeaderSection";
 
 export default function ApplyForLicensePage() {
   const router = useRouter();
@@ -586,15 +587,15 @@ export default function ApplyForLicensePage() {
   return (
     <main>
       <Navbar />
-      <div className="min-h-screen px-6 mt-20 md:mt-30 mb-16">
-        <div className="space-y-5">
-          <div className="flex flex-col md:flex-row justify-between md:items-center gap-4">
-            <h1 className="text-3xl font-bold">Licensing Portal</h1>
+      <div className="min-h-screen px-6 mt-20 flex items-center justify-center">
+        <div className="space-y-5 w-full max-w-4xl">
+          <div className="flex flex-col gap-4">
+            <HeaderSection title="License" pinkText="Portal" textSize="text-3xl" />
             <div className="relative">
               <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
               <Input
                 type="search"
-                className="h-10 md:min-w-md max-w-md text-lg rounded-none border-gray-400 placeholder:text-gray-900 pl-10"
+                className="h-10 md:min-w-md max-w-md text-lg placeholder:text-gray-900 pl-10 w-full"
                 placeholder="Search licenses..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -607,12 +608,12 @@ export default function ApplyForLicensePage() {
               Loading licence types...
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {filteredLicenses.length > 0 ? (
                 filteredLicenses.map((lt) => (
                   <div
                     key={lt.id}
-                    className="p-4 flex flex-col justify-between border border-gray-400 bg-gray-50 space-y-2"
+                    className="p-4 flex flex-col rounded-md justify-between border border-gray-300 bg-gray-50 space-y-2"
                   >
                     <div>
                       <h3 className="text-xl font-bold">{lt.name}</h3>
@@ -635,7 +636,7 @@ export default function ApplyForLicensePage() {
                     </div>
                     <button
                       onClick={() => setSelectedType(lt)}
-                      className="py-1 bg-turquoise text-white text-md w-full cursor-pointer hover:bg-turquoise/90"
+                      className="py-1 bg-turquoise rounded-md text-white text-md w-full cursor-pointer hover:bg-turquoise/90"
                     >
                       Apply
                     </button>

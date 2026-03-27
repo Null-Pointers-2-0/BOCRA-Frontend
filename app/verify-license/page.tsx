@@ -54,14 +54,12 @@ export default function VerifyLicensePage() {
   return (
     <main>
       <Navbar />
-      <div className="min-h-screen px-6 mt-20 md:mt-30">
-        <div className="max-w-3xl mx-auto space-y-5">
+      <div className="min-h-screen px-6 mt-20">
+        <div className="space-y-5 w-full max-w-4xl mx-auto">
           <HeaderSection
             title="License"
             pinkText="Verification"
-            textSize="text-5xl"
-            description="Verify the validity of a BOCRA licence by entering a licence
-              number or company name."
+            textSize="text-3xl"
           />
 
           <form
