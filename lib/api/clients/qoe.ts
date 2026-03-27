@@ -9,7 +9,26 @@ import type {
   QoETrendsData,
 } from "../types/qoe";
 
+export type QoEReportSubmission = {
+  operator: string;
+  service_type: "DATA" | "VOICE" | "SMS" | "FIXED";
+  connection_type: "2G" | "3G" | "4G" | "5G";
+  rating: number;
+  download_speed?: number | null;
+  upload_speed?: number | null;
+  latency_ms?: number | null;
+  latitude?: number | null;
+  longitude?: number | null;
+  district?: string | null;
+  description?: string;
+};
+
 export const qoeClient = {
+  submit: (data: QoEReportSubmission) =>
+    apiClient("/qoe/reports/", { method: "POST", body: data }),
+
+  ping: () => apiClient<{ pong: boolean; ts: number }>("/qoe/ping/"),
+
   heatmap: (params?: QoEHeatmapParams) =>
     apiClient<QoEHeatmapData>("/qoe/heatmap/", { params }),
 

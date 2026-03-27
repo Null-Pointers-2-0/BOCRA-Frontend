@@ -156,7 +156,7 @@ export default function PublicComplaintsPage() {
           />
 
           {/* Track existing complaint */}
-          <section className="bg-gray-50 border border-gray-200 rounded-md p-6">
+          <section id="track" className="bg-gray-50 border border-gray-200 rounded-md p-6">
             <h2 className="text-xl font-semibold mb-3">Track an Existing Complaint</h2>
             <form onSubmit={handleTrack} className="flex gap-3">
               <div className="relative flex-1">

@@ -98,13 +98,13 @@ export default function CoverageMap({
   const coverageStyle = (feature: GeoJSON.Feature | undefined): PathOptions => {
     if (!feature) return {};
     const props = feature.properties || {};
-    const opCode = props.operator_code;
+    const opCode = props.operator || props.operator_code;
     if (selectedOperator && opCode !== selectedOperator) {
       return { fillOpacity: 0, opacity: 0 };
     }
     return {
       fillColor: operatorColors[opCode] || getCoverageLevelColor(props.coverage_level),
-      fillOpacity: 0.35,
+      fillOpacity: selectedOperator ? 0.55 : 0.35,
       color: operatorColors[opCode] || "#6b7280",
       weight: 1,
     };
@@ -129,7 +129,6 @@ export default function CoverageMap({
 
   return (
     <MapContainer
-      key={`coverage-map-${selectedOperator}-${showHeatMap}`}
       center={BOTSWANA_CENTER}
       zoom={BOTSWANA_ZOOM}
       className="h-full w-full"
@@ -143,7 +142,7 @@ export default function CoverageMap({
       />
       {showDistricts && districtGeoJSON && (
         <GeoJSON
-          key={`districts-${showHeatMap}`}
+          key={`districts-${showHeatMap}-${districtGeoJSON.features?.length}`}
           data={districtGeoJSON}
           style={districtStyle}
           onEachFeature={onEachDistrict}
@@ -151,7 +150,7 @@ export default function CoverageMap({
       )}
       {showCoverage && coverageGeoJSON && (
         <GeoJSON
-          key={`coverage-${selectedOperator}`}
+          key={`coverage-${selectedOperator}-${coverageGeoJSON.features?.length}-${showHeatMap}`}
           data={coverageGeoJSON}
           style={coverageStyle}
           onEachFeature={onEachCoverage}

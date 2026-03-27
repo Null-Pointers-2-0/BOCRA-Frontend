@@ -94,10 +94,10 @@ const navItems: NavItem[] = [
   },
   {
     name: "Complaints",
-    href: "/complaints",
+    href: "/file-complaint",
     children: [
-      { name: "File a complaint", href: "/complaints" },
-      { name: "Track a complaint", href: "/complaints#track" },
+      { name: "File a complaint", href: "/file-complaint" },
+      { name: "Track a complaint", href: "/file-complaint#track" },
     ],
   },
   {

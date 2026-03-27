@@ -24,6 +24,7 @@ import {
   Activity,
   MapPin,
   GitCompareArrows,
+  Send,
 } from "lucide-react";
 import {
   BarChart,
@@ -46,7 +47,7 @@ import HeaderSection from "@/components/HeaderSection";
 
 const QoEHeatmap = dynamic(() => import("./qoe-heatmap"), { ssr: false });
 
-type Tab = "dashboard" | "heatmap" | "trends" | "speeds" | "compare";
+type Tab = "report" | "dashboard" | "trends";
 
 const OPERATOR_COLORS: Record<string, string> = {
   MASCOM: "#0073ae",
@@ -82,7 +83,7 @@ function StarRating({ rating, size = 14 }: { rating: number; size?: number }) {
 }
 
 export default function QoEPage() {
-  const [activeTab, setActiveTab] = useState<Tab>("dashboard");
+  const [activeTab, setActiveTab] = useState<Tab>("report");
   const [isLoading, setIsLoading] = useState(true);
   const [summary, setSummary] = useState<QoESummary | null>(null);
 
@@ -108,11 +109,9 @@ export default function QoEPage() {
   }
 
   const tabs: { key: Tab; label: string; icon: typeof BarChart3 }[] = [
+    { key: "report", label: "Rate Your Network", icon: Send },
     { key: "dashboard", label: "Dashboard", icon: BarChart3 },
-    { key: "heatmap", label: "Heatmap", icon: MapPin },
     { key: "trends", label: "Trends", icon: TrendingUp },
-    { key: "speeds", label: "Speed Tests", icon: Gauge },
-    { key: "compare", label: "QoS vs QoE", icon: GitCompareArrows },
   ];
 
   return (
@@ -175,17 +174,384 @@ export default function QoEPage() {
         ))}
       </div>
 
+      {activeTab === "report" && <ReportTab />}
       {activeTab === "dashboard" && (
         <DashboardTab summary={summary} />
       )}
-      {activeTab === "heatmap" && <HeatmapTab />}
       {activeTab === "trends" && <TrendsTab />}
-      {activeTab === "speeds" && <SpeedsTab />}
-      {activeTab === "compare" && <CompareTab />}
     </div>
       </main>
       <Footer />
     </>
+  );
+}
+
+// -- Report Tab ---------------------------------------------------------------
+
+function ReportTab() {
+  const [operators, setOperators] = useState<{ id: string; name: string; code: string }[]>([]);
+  const [districts, setDistricts] = useState<{ id: string; name: string }[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const [operator, setOperator] = useState("");
+  const [serviceType, setServiceType] = useState("DATA");
+  const [connectionType, setConnectionType] = useState("4G");
+  const [rating, setRating] = useState(0);
+  const [hoverRating, setHoverRating] = useState(0);
+  const [district, setDistrict] = useState("");
+  const [description, setDescription] = useState("");
+
+  // Speed test state
+  const [speedPhase, setSpeedPhase] = useState<"idle" | "latency" | "download" | "upload" | "submitting" | "done">("idle");
+  const [downloadSpeed, setDownloadSpeed] = useState<number | null>(null);
+  const [uploadSpeed, setUploadSpeed] = useState<number | null>(null);
+  const [latencyMs, setLatencyMs] = useState<number | null>(null);
+
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState(false);
+
+  useEffect(() => {
+    Promise.all([
+      import("@/lib/api/clients/coverages").then((m) => m.coveragesClient.operators()),
+      import("@/lib/api/clients/coverages").then((m) => m.coveragesClient.districts()),
+    ]).then(([opRes, distRes]) => {
+      if (opRes.success) setOperators(opRes.data);
+      if (distRes.success) setDistricts(distRes.data);
+      setLoading(false);
+    });
+  }, []);
+
+  const apiBase = process.env.NEXT_PUBLIC_API_URL!;
+
+  const runSpeedTest = async () => {
+    if (!operator || !rating) {
+      setError("Please select an operator and provide a rating.");
+      return;
+    }
+    setError("");
+
+    let measuredLatency: number | null = null;
+    let measuredDownload: number | null = null;
+    let measuredUpload: number | null = null;
+
+    // --- Latency (ping) ---
+    setSpeedPhase("latency");
+    try {
+      const pings: number[] = [];
+      for (let i = 0; i < 3; i++) {
+        const t0 = performance.now();
+        await fetch(`${apiBase}/qoe/ping/`, { cache: "no-store" });
+        pings.push(performance.now() - t0);
+      }
+      measuredLatency = Math.round(pings.reduce((a, b) => a + b, 0) / pings.length);
+      setLatencyMs(measuredLatency);
+    } catch {
+      setLatencyMs(null);
+    }
+
+    // --- Download ---
+    setSpeedPhase("download");
+    try {
+      const t0 = performance.now();
+      const res = await fetch(`${apiBase}/qoe/speedtest-file/`, { cache: "no-store" });
+      const blob = await res.blob();
+      const elapsed = (performance.now() - t0) / 1000;
+      const bits = blob.size * 8;
+      const mbps = bits / elapsed / 1_000_000;
+      measuredDownload = Math.round(mbps * 10) / 10;
+      setDownloadSpeed(measuredDownload);
+    } catch {
+      setDownloadSpeed(null);
+    }
+
+    // --- Upload ---
+    setSpeedPhase("upload");
+    try {
+      const uploadBlob = new Blob([new Uint8Array(512 * 1024)]);
+      const formData = new FormData();
+      formData.append("file", uploadBlob, "speedtest.bin");
+      const t0 = performance.now();
+      await fetch(`${apiBase}/qoe/speedtest-upload/`, {
+        method: "POST",
+        body: formData,
+      });
+      const elapsed = (performance.now() - t0) / 1000;
+      const bits = uploadBlob.size * 8;
+      const mbps = bits / elapsed / 1_000_000;
+      measuredUpload = Math.round(mbps * 10) / 10;
+      setUploadSpeed(measuredUpload);
+    } catch {
+      setUploadSpeed(null);
+    }
+
+    // --- Submit report with measured values ---
+    setSpeedPhase("submitting");
+    try {
+      const res = await qoeClient.submit({
+        operator,
+        service_type: serviceType as "DATA" | "VOICE" | "SMS" | "FIXED",
+        connection_type: connectionType as "2G" | "3G" | "4G" | "5G",
+        rating,
+        download_speed: measuredDownload,
+        upload_speed: measuredUpload,
+        latency_ms: measuredLatency,
+        district: district || null,
+        description: description || undefined,
+      });
+      if (res.success) {
+        setSpeedPhase("done");
+        setSuccess(true);
+      } else {
+        setError(res.message || "Submission failed.");
+        setSpeedPhase("idle");
+      }
+    } catch {
+      setError("Network error. Please try again.");
+      setSpeedPhase("idle");
+    }
+  };
+
+  const isRunning = speedPhase !== "idle" && speedPhase !== "done";
+
+  if (loading) {
+    return (
+      <div className="flex justify-center py-12">
+        <Loader2 className="h-6 w-6 animate-spin text-[#0073ae]" />
+      </div>
+    );
+  }
+
+  if (success) {
+    return (
+      <div className="max-w-lg mx-auto bg-green-50 border border-green-400 rounded-md p-8 text-center space-y-4">
+        <div className="text-green-600 text-4xl">✓</div>
+        <h2 className="text-xl font-semibold text-green-800">Thank You!</h2>
+        <p className="text-gray-700">
+          Your network experience report has been submitted. This helps BOCRA
+          monitor service quality across Botswana.
+        </p>
+
+        {/* Show measured results */}
+        <div className="grid grid-cols-3 gap-3 pt-2">
+          <div className="bg-white rounded-md border border-green-200 p-3">
+            <p className="text-xs text-gray-500">Download</p>
+            <p className="text-lg font-bold text-gray-900">{downloadSpeed ?? "—"} <span className="text-xs font-normal">Mbps</span></p>
+          </div>
+          <div className="bg-white rounded-md border border-green-200 p-3">
+            <p className="text-xs text-gray-500">Upload</p>
+            <p className="text-lg font-bold text-gray-900">{uploadSpeed ?? "—"} <span className="text-xs font-normal">Mbps</span></p>
+          </div>
+          <div className="bg-white rounded-md border border-green-200 p-3">
+            <p className="text-xs text-gray-500">Latency</p>
+            <p className="text-lg font-bold text-gray-900">{latencyMs ?? "—"} <span className="text-xs font-normal">ms</span></p>
+          </div>
+        </div>
+
+        <button
+          onClick={() => {
+            setSuccess(false);
+            setSpeedPhase("idle");
+            setDownloadSpeed(null);
+            setUploadSpeed(null);
+            setLatencyMs(null);
+            setRating(0);
+            setDescription("");
+          }}
+          className="px-6 py-2 bg-[#0073ae] text-white rounded-md hover:bg-[#005f8e] transition-colors"
+        >
+          Submit Another Report
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="bg-gray-50 border border-gray-200 rounded-md p-6 space-y-5">
+        <div>
+          <h3 className="text-lg font-semibold text-gray-900">Rate Your Network Experience</h3>
+          <p className="text-sm text-gray-500 mt-1">
+            Help BOCRA improve telecoms quality. We&apos;ll run an automatic speed test when you submit. No login required.
+          </p>
+        </div>
+
+        {error && (
+          <div className="bg-red-50 border border-red-400 text-red-700 p-3 rounded-md text-sm">
+            {error}
+          </div>
+        )}
+
+        {/* Operator & Connection */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Operator <span className="text-pink-500">*</span>
+            </label>
+            <select
+              value={operator}
+              onChange={(e) => setOperator(e.target.value)}
+              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm bg-white"
+              disabled={isRunning}
+              required
+            >
+              <option value="">Select operator</option>
+              {operators.map((op) => (
+                <option key={op.id} value={op.id}>{op.name}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Service Type</label>
+            <select
+              value={serviceType}
+              onChange={(e) => setServiceType(e.target.value)}
+              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm bg-white"
+              disabled={isRunning}
+            >
+              <option value="DATA">Mobile Data / Internet</option>
+              <option value="VOICE">Voice Calls</option>
+              <option value="SMS">Text Messaging</option>
+              <option value="FIXED">Fixed Broadband</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Connection Type</label>
+            <select
+              value={connectionType}
+              onChange={(e) => setConnectionType(e.target.value)}
+              className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm bg-white"
+              disabled={isRunning}
+            >
+              <option value="2G">2G</option>
+              <option value="3G">3G</option>
+              <option value="4G">4G</option>
+              <option value="5G">5G</option>
+            </select>
+          </div>
+        </div>
+
+        {/* Star Rating */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Rating <span className="text-pink-500">*</span>
+          </label>
+          <div className="flex items-center gap-1">
+            {[1, 2, 3, 4, 5].map((s) => (
+              <button
+                key={s}
+                type="button"
+                disabled={isRunning}
+                onMouseEnter={() => setHoverRating(s)}
+                onMouseLeave={() => setHoverRating(0)}
+                onClick={() => setRating(s)}
+                className="p-0.5 transition-transform hover:scale-110"
+              >
+                <Star
+                  className={`h-8 w-8 ${s <= (hoverRating || rating) ? "fill-current" : ""}`}
+                  style={{
+                    color: s <= (hoverRating || rating) ? "#f59e0b" : "#d1d5db",
+                  }}
+                />
+              </button>
+            ))}
+            {rating > 0 && (
+              <span className="ml-2 text-sm text-gray-500">
+                {rating === 1 ? "Very Poor" : rating === 2 ? "Poor" : rating === 3 ? "Average" : rating === 4 ? "Good" : "Excellent"}
+              </span>
+            )}
+          </div>
+        </div>
+
+        {/* District */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            District <span className="text-xs text-gray-400">(optional)</span>
+          </label>
+          <select
+            value={district}
+            onChange={(e) => setDistrict(e.target.value)}
+            className="w-full md:w-1/2 rounded-md border border-gray-300 px-3 py-2 text-sm bg-white"
+            disabled={isRunning}
+          >
+            <option value="">Select district</option>
+            {districts.map((d) => (
+              <option key={d.id} value={d.id}>{d.name}</option>
+            ))}
+          </select>
+        </div>
+
+        {/* Description */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Additional Comments <span className="text-xs text-gray-400">(optional)</span>
+          </label>
+          <textarea
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            rows={3}
+            maxLength={1000}
+            placeholder="Describe your experience..."
+            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm resize-none"
+            disabled={isRunning}
+          />
+        </div>
+
+        {/* Speed test progress */}
+        {isRunning && (
+          <div className="bg-blue-50 border border-blue-200 rounded-md p-4 space-y-3">
+            <p className="text-sm font-medium text-blue-800">Running speed test...</p>
+            <div className="grid grid-cols-3 gap-3">
+              <div className={`rounded-md p-3 text-center ${speedPhase === "latency" ? "bg-blue-100 ring-2 ring-blue-400" : latencyMs !== null ? "bg-green-50" : "bg-gray-100"}`}>
+                <p className="text-xs text-gray-500">Latency</p>
+                {speedPhase === "latency" ? (
+                  <Loader2 className="h-5 w-5 animate-spin mx-auto text-blue-600 mt-1" />
+                ) : (
+                  <p className="text-lg font-bold text-gray-900">{latencyMs ?? "—"} <span className="text-xs font-normal">ms</span></p>
+                )}
+              </div>
+              <div className={`rounded-md p-3 text-center ${speedPhase === "download" ? "bg-blue-100 ring-2 ring-blue-400" : downloadSpeed !== null ? "bg-green-50" : "bg-gray-100"}`}>
+                <p className="text-xs text-gray-500">Download</p>
+                {speedPhase === "download" ? (
+                  <Loader2 className="h-5 w-5 animate-spin mx-auto text-blue-600 mt-1" />
+                ) : (
+                  <p className="text-lg font-bold text-gray-900">{downloadSpeed ?? "—"} <span className="text-xs font-normal">Mbps</span></p>
+                )}
+              </div>
+              <div className={`rounded-md p-3 text-center ${speedPhase === "upload" ? "bg-blue-100 ring-2 ring-blue-400" : uploadSpeed !== null ? "bg-green-50" : "bg-gray-100"}`}>
+                <p className="text-xs text-gray-500">Upload</p>
+                {speedPhase === "upload" ? (
+                  <Loader2 className="h-5 w-5 animate-spin mx-auto text-blue-600 mt-1" />
+                ) : (
+                  <p className="text-lg font-bold text-gray-900">{uploadSpeed ?? "—"} <span className="text-xs font-normal">Mbps</span></p>
+                )}
+              </div>
+            </div>
+            {speedPhase === "submitting" && (
+              <p className="text-xs text-blue-600 text-center">Submitting report...</p>
+            )}
+          </div>
+        )}
+
+        <button
+          type="button"
+          onClick={runSpeedTest}
+          disabled={isRunning || !operator || !rating}
+          className="w-full md:w-auto px-8 py-2.5 bg-[#e8457e] text-white rounded-md hover:bg-[#d13a6e] disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium flex items-center gap-2"
+        >
+          {isRunning ? (
+            <>
+              <Loader2 className="h-4 w-4 animate-spin" />
+              Testing &amp; Submitting...
+            </>
+          ) : (
+            <>
+              <Gauge className="h-4 w-4" />
+              Run Speed Test &amp; Submit
+            </>
+          )}
+        </button>
+      </div>
+    </div>
   );
 }
 
