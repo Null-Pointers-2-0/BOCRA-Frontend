@@ -3,6 +3,7 @@ import { Instrument_Sans, Inter } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/contexts/ThemeContext";
+import AIAssistant from "@/components/AIAssistant";
 
 const inter = Inter({subsets:['latin'],variable:'--font-sans'});
 
@@ -29,6 +30,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <ThemeProvider>
           {children}
+          <AIAssistant />
         </ThemeProvider>
       </body>
     </html>
