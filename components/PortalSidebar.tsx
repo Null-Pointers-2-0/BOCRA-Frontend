@@ -9,13 +9,18 @@ import {
   WarningCircle,
   IdentificationCard,
   Bell,
+  BellRinging,
   Gear,
   SignOut,
   X,
   CaretLeft,
   CaretRight,
+  Globe,
+  WifiHigh,
 } from "@phosphor-icons/react";
 import { ProfileModal } from "./ProfileModal";
+import { useAuth } from "@/contexts/AuthContext";
+import { getUnreadCount } from "@/lib/api/clients/notifications";
 
 interface SidebarProps {
   activeNav: string;
@@ -33,15 +38,33 @@ export const PortalSidebar: React.FC<SidebarProps> = ({
   isDarkMode,
 }) => {
   const router = useRouter();
+  const { user, logout } = useAuth();
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
+  const [unreadBadge, setUnreadBadge] = useState<number>(0);
+
+  useEffect(() => {
+    getUnreadCount().then((res) => {
+      if (res.success) {
+        setUnreadBadge(res.data.unread_count ?? 0);
+      }
+    }).catch(() => {});
+  }, []);
 
   const navItems = [
     { id: "overview", label: "Overview", icon: ChartLine },
     { id: "applications", label: "My Applications", icon: FileText },
     { id: "complaints", label: "My Complaints", icon: WarningCircle },
     { id: "licenses", label: "My Licenses", icon: IdentificationCard },
-    { id: "notifications", label: "Notifications", icon: Bell, badge: 3 },
+    { id: "domains", label: "My Domains", icon: Globe },
+    { id: "alerts", label: "Alert Preferences", icon: BellRinging },
+    { id: "notifications", label: "Notifications", icon: Bell, badge: unreadBadge > 0 ? unreadBadge : undefined },
+  ];
+
+  const qosItems = [
+    { id: "coverage", label: "Coverage Map", href: "/qos/coverage" },
+    { id: "qoe", label: "Quality of Experience", href: "/qos/qoe" },
+    { id: "scorecard", label: "Operator Scorecard", href: "/qos/scorecard" },
   ];
 
   // Listen for mobile drawer toggle event
@@ -102,11 +125,16 @@ export const PortalSidebar: React.FC<SidebarProps> = ({
               key={item.id}
               onClick={() => {
                 setActiveNav(item.id);
-                if (item.id === 'overview') router.push('/dashboard');
-                if (item.id === 'applications') router.push('/applications');
-                if (item.id === 'complaints') router.push('/complaints');
-                if (item.id === 'licenses') router.push('/licenses');
-                if (item.id === 'notifications') router.push('/notifications');
+                const routes: Record<string, string> = {
+                  overview: '/dashboard',
+                  applications: '/applications',
+                  complaints: '/complaints',
+                  licenses: '/licenses',
+                  domains: '/domains',
+                  alerts: '/alerts',
+                  notifications: '/notifications',
+                };
+                if (routes[item.id]) router.push(routes[item.id]);
               }}
               className={`group flex items-center ${sidebarCollapsed ? 'justify-center' : 'gap-3'} px-3 py-3 rounded-lg transition-all duration-200 w-full ${
                 isActive
@@ -134,6 +162,44 @@ export const PortalSidebar: React.FC<SidebarProps> = ({
           );
         })}
 
+        {/* QoS Section */}
+        {!sidebarCollapsed && (
+          <div className={`pt-4 mt-4 border-t ${isDarkMode ? 'border-slate-800' : 'border-gray-200'}`}>
+            <p className={`px-3 mb-2 text-[10px] font-bold uppercase tracking-wider ${
+              isDarkMode ? 'text-slate-500' : 'text-gray-400'
+            }`}>Quality of Service</p>
+            {qosItems.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => router.push(item.href)}
+                className={`group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 w-full ${
+                  isDarkMode
+                    ? 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                    : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                }`}
+              >
+                <WifiHigh size={18} weight="regular" />
+                <span className="text-sm font-medium">{item.label}</span>
+              </button>
+            ))}
+          </div>
+        )}
+        {sidebarCollapsed && (
+          <div className={`pt-4 mt-4 border-t ${isDarkMode ? 'border-slate-800' : 'border-gray-200'}`}>
+            <button
+              onClick={() => router.push('/qos/coverage')}
+              className={`group flex items-center justify-center px-3 py-3 rounded-lg transition-all duration-200 w-full ${
+                isDarkMode
+                  ? 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                  : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+              }`}
+              title="Quality of Service"
+            >
+              <WifiHigh size={20} weight="regular" />
+            </button>
+          </div>
+        )}
+
         {/* Bottom Navigation Actions */}
         <div className={`pt-6 mt-6 border-t space-y-2 ${
           isDarkMode ? 'border-slate-800' : 'border-gray-200'
@@ -156,7 +222,8 @@ export const PortalSidebar: React.FC<SidebarProps> = ({
                   ? 'text-slate-400 hover:bg-slate-800 hover:text-red-400'
                   : 'text-gray-600 hover:bg-gray-100 hover:text-red-600'
               }`}
-              title="Logout (Coming Soon)"
+              title="Logout"
+              onClick={() => logout()}
             >
               <SignOut size={20} />
               {!sidebarCollapsed && <span className="text-sm font-medium">Logout</span>}
@@ -178,16 +245,16 @@ export const PortalSidebar: React.FC<SidebarProps> = ({
             title="Profile"
           >
             <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
-              TM
+              {user ? `${user.first_name[0] || ""}${user.last_name[0] || ""}` : "??"}
             </div>
             {!sidebarCollapsed && (
               <div className="flex-1 min-w-0 text-left">
                 <p className={`text-sm font-semibold truncate ${
                   isDarkMode ? 'text-white' : 'text-gray-900'
-                }`}>Thabo Molapo</p>
+                }`}>{user ? user.full_name : "Loading…"}</p>
                 <p className={`text-xs truncate ${
                   isDarkMode ? 'text-slate-400' : 'text-gray-500'
-                }`}>Business User</p>
+                }`}>{user?.role_display || "User"}</p>
               </div>
             )}
           </button>
@@ -261,11 +328,16 @@ export const PortalSidebar: React.FC<SidebarProps> = ({
                   onClick={() => {
                     setActiveNav(item.id);
                     setIsMobileDrawerOpen(false);
-                    if (item.id === 'overview') router.push('/dashboard');
-                    if (item.id === 'applications') router.push('/applications');
-                    if (item.id === 'complaints') router.push('/complaints');
-                    if (item.id === 'licenses') router.push('/licenses');
-                    if (item.id === 'notifications') router.push('/notifications');
+                    const routes: Record<string, string> = {
+                      overview: '/dashboard',
+                      applications: '/applications',
+                      complaints: '/complaints',
+                      licenses: '/licenses',
+                      domains: '/domains',
+                      alerts: '/alerts',
+                      notifications: '/notifications',
+                    };
+                    if (routes[item.id]) router.push(routes[item.id]);
                   }}
                   className={`group flex items-center gap-3 px-3 py-3 rounded-lg transition-all duration-200 w-full ${
                     isActive
@@ -285,6 +357,30 @@ export const PortalSidebar: React.FC<SidebarProps> = ({
                 </button>
               );
             })}
+
+            {/* QoS Section (Mobile) */}
+            <div className={`pt-4 mt-4 border-t ${isDarkMode ? 'border-slate-800' : 'border-gray-200'}`}>
+              <p className={`px-3 mb-2 text-[10px] font-bold uppercase tracking-wider ${
+                isDarkMode ? 'text-slate-500' : 'text-gray-400'
+              }`}>Quality of Service</p>
+              {qosItems.map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => {
+                    setIsMobileDrawerOpen(false);
+                    router.push(item.href);
+                  }}
+                  className={`group flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 w-full ${
+                    isDarkMode
+                      ? 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                      : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                  }`}
+                >
+                  <WifiHigh size={18} weight="regular" />
+                  <span className="text-sm font-medium">{item.label}</span>
+                </button>
+              ))}
+            </div>
 
             {/* Bottom Navigation Actions */}
             <div className={`pt-6 mt-6 border-t space-y-2 ${
@@ -308,7 +404,8 @@ export const PortalSidebar: React.FC<SidebarProps> = ({
                     ? 'text-slate-400 hover:bg-slate-800 hover:text-red-400'
                     : 'text-gray-600 hover:bg-gray-100 hover:text-red-600'
                 }`}
-                title="Logout (Coming Soon)"
+                title="Logout"
+                onClick={() => { setIsMobileDrawerOpen(false); logout(); }}
               >
                 <SignOut size={20} />
                 <span className="text-sm font-medium">Logout</span>
@@ -333,15 +430,15 @@ export const PortalSidebar: React.FC<SidebarProps> = ({
               title="Profile"
             >
               <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
-                TM
+                {user ? `${user.first_name[0] || ""}${user.last_name[0] || ""}` : "??"}
               </div>
               <div className="flex-1 text-left">
                 <p className={`text-sm font-semibold ${
                   isDarkMode ? 'text-white' : 'text-gray-900'
-                }`}>Thabo Molapo</p>
+                }`}>{user ? user.full_name : "Loading…"}</p>
                 <p className={`text-xs ${
                   isDarkMode ? 'text-slate-400' : 'text-gray-500'
-                }`}>Business User</p>
+                }`}>{user?.role_display || "User"}</p>
               </div>
             </button>
           </div>

@@ -9,3 +9,5 @@ export * as clientDomains from "./domains";
 export { coveragesClient } from "./coverages";
 export { qoeClient } from "./qoe";
 export { scorecardClient } from "./scorecard";
+export * as clientCybersecurity from "./cybersecurity";
+export * as clientAlerts from "./alerts";

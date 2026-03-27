@@ -12,7 +12,7 @@ import {
 } from "@phosphor-icons/react";
 import HeaderSection from "@/components/HeaderSection";
 
-export default function Tarrifs() {
+export default function Tariffs() {
   const mobileData = [
     { volume: "100MB", price: "P2.00", validity: "24 Hours", status: "Active" },
     { volume: "1.5GB", price: "P10.00", validity: "24 Hours", status: "New" },
@@ -46,7 +46,7 @@ export default function Tarrifs() {
       <main className="flex flex-col md:items-center min-h-screen px-6 mt-20 md:mt-30">
         <div className="w-full max-w-4xl space-y-5">
           <HeaderSection
-            title="Tarrifs"
+            title="Tariffs"
             textSize="text-5xl"
             description="Ensuring affordable communication for Botswana"
           />

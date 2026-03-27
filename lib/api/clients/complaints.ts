@@ -7,6 +7,7 @@ import type {
   ComplaintCategoryOption,
   ComplaintCreateRequest,
   ComplaintDocument,
+  ComplaintSubmitResponse,
 } from "../types/complaints";
 
 // ── Public ──
@@ -18,8 +19,8 @@ export async function getCategories(): Promise<
 
 export async function submitComplaint(
   data: ComplaintCreateRequest
-): Promise<ApiResponse<ComplaintDetail>> {
-  return apiClient<ComplaintDetail>("/complaints/submit/", {
+): Promise<ApiResponse<ComplaintSubmitResponse>> {
+  return apiClient<ComplaintSubmitResponse>("/complaints/submit/", {
     method: "POST",
     body: data,
   });
@@ -35,9 +36,9 @@ export async function trackComplaint(
 
 // ── Authenticated complainant ──
 export async function getMyComplaints(
-  params?: { page?: number }
-): Promise<ApiResponse<PaginatedData<ComplaintListItem>>> {
-  return apiClient<PaginatedData<ComplaintListItem>>("/complaints/", {
+  params?: { page?: number; status?: string; category?: string; priority?: string }
+): Promise<ApiResponse<ComplaintListItem[]>> {
+  return apiClient<ComplaintListItem[]>("/complaints/", {
     params: params as Record<string, string | number | boolean | undefined>,
   });
 }

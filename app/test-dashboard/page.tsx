@@ -121,7 +121,7 @@ export default function TestDashboardPage() {
             <StatusCard
               label="Notifications"
               ok={!!unread}
-              detail={unread ? `${unread.count} unread` : "Failed"}
+              detail={unread ? `${unread.unread_count} unread` : "Failed"}
             />
           </div>
         </div>

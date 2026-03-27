@@ -1,21 +1,11 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import React, { useState } from "react";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useAuth } from "@/contexts/AuthContext";
+import { updateProfile, changePassword } from "@/lib/api/clients/auth";
 import PortalHeader from "@/components/PortalHeader";
 import { 
-  User,
-  Envelope,
-  Phone,
-  Building,
-  Briefcase,
-  Shield,
-  Key,
-  Bell,
-  Envelope as Mail,
-  ChatsTeardrop as Sms,
-  AppWindow as AppRegistration,
   ShieldCheck as Security,
   User as Person,
   IdentificationCard as Badge,
@@ -23,39 +13,118 @@ import {
   Pencil as Edit,
   Trash as DeleteForever,
   CaretRight as ChevronRight,
-  BellRinging as NotificationsActive
+  BellRinging as NotificationsActive,
+  Envelope as Mail,
+  ChatsTeardrop as Sms,
+  AppWindow as AppRegistration,
 } from "@phosphor-icons/react";
 
 export default function Profile() {
-  const router = useRouter();
   const { isDarkMode } = useTheme();
+  const { user, refreshUser } = useAuth();
   
-  const [isClient, setIsClient] = useState(false);
-  const [twoFactorEnabled, setTwoFactorEnabled] = useState(true);
+  const [isEditing, setIsEditing] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [saveMessage, setSaveMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+
+  // Editable form fields
+  const [firstName, setFirstName] = useState(user?.first_name || "");
+  const [lastName, setLastName] = useState(user?.last_name || "");
+  const [phone, setPhone] = useState(user?.phone_number || "");
+  const [organisation, setOrganisation] = useState(user?.profile?.organisation || "");
+  const [position, setPosition] = useState(user?.profile?.position || "");
+  const [bio, setBio] = useState(user?.profile?.bio || "");
+  const [address, setAddress] = useState(user?.profile?.address || "");
+  const [city, setCity] = useState(user?.profile?.city || "");
+
+  // Password change
+  const [showPasswordForm, setShowPasswordForm] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordMessage, setPasswordMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [changingPassword, setChangingPassword] = useState(false);
+
+  // Notification prefs (client-side only for now)
   const [emailAlerts, setEmailAlerts] = useState(true);
   const [smsMessages, setSmsMessages] = useState(true);
   const [inAppNotify, setInAppNotify] = useState(true);
 
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
+  const initials = user
+    ? `${user.first_name?.[0] || ""}${user.last_name?.[0] || ""}`
+    : "??";
 
-  const profileData = {
-    name: "Thabo Molapo",
-    email: "thabo.molapo@molapo-logistics.co.bw",
-    phone: "+267 71 234 567",
-    company: "Molapo Logistics Ltd.",
-    position: "Business Administrator",
-    role: "Portal Administrator (Commercial)",
-    jurisdiction: "Cross-border Logistics & Licensing"
-  };
+  function startEditing() {
+    setFirstName(user?.first_name || "");
+    setLastName(user?.last_name || "");
+    setPhone(user?.phone_number || "");
+    setOrganisation(user?.profile?.organisation || "");
+    setPosition(user?.profile?.position || "");
+    setBio(user?.profile?.bio || "");
+    setAddress(user?.profile?.address || "");
+    setCity(user?.profile?.city || "");
+    setIsEditing(true);
+    setSaveMessage(null);
+  }
 
-  if (!isClient) {
-    return (
-      <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex items-center justify-center">
-        <div className="text-slate-600 dark:text-slate-400">Loading...</div>
-      </div>
-    );
+  async function handleSave() {
+    setSaving(true);
+    setSaveMessage(null);
+    try {
+      const res = await updateProfile({
+        first_name: firstName,
+        last_name: lastName,
+        phone_number: phone,
+        profile: {
+          organisation,
+          position,
+          bio,
+          address,
+          city,
+        },
+      });
+      if (res.success) {
+        setSaveMessage({ type: "success", text: "Profile updated successfully." });
+        setIsEditing(false);
+        await refreshUser();
+      } else {
+        setSaveMessage({ type: "error", text: res.message || "Failed to update profile." });
+      }
+    } catch {
+      setSaveMessage({ type: "error", text: "Network error — please try again." });
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function handlePasswordChange(e: React.FormEvent) {
+    e.preventDefault();
+    if (newPassword !== confirmPassword) {
+      setPasswordMessage({ type: "error", text: "Passwords do not match." });
+      return;
+    }
+    setChangingPassword(true);
+    setPasswordMessage(null);
+    try {
+      const res = await changePassword({
+        current_password: currentPassword,
+        new_password: newPassword,
+        confirm_password: confirmPassword,
+      });
+      if (res.success) {
+        setPasswordMessage({ type: "success", text: "Password changed successfully." });
+        setCurrentPassword("");
+        setNewPassword("");
+        setConfirmPassword("");
+        setShowPasswordForm(false);
+      } else {
+        setPasswordMessage({ type: "error", text: res.message || "Failed to change password." });
+      }
+    } catch {
+      setPasswordMessage({ type: "error", text: "Network error — please try again." });
+    } finally {
+      setChangingPassword(false);
+    }
   }
 
   return (
@@ -81,7 +150,7 @@ export default function Profile() {
             <div className="relative group">
               <div className="w-32 h-32 rounded-full overflow-hidden ring-4 ring-blue-600/20">
                 <div className="w-full h-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white text-3xl font-bold">
-                  TM
+                  {initials}
                 </div>
               </div>
               <button className="absolute bottom-0 right-0 bg-blue-600 text-white p-2 rounded-full shadow-lg hover:scale-105 transition-transform">
@@ -93,9 +162,9 @@ export default function Profile() {
               <h1 className={`text-3xl font-bold tracking-tight ${
                 isDarkMode ? 'text-white' : 'text-gray-900'
               }`}>
-                {profileData.name}
+                {user?.full_name || "Loading…"}
               </h1>
-              <p className="text-blue-600 font-medium">{profileData.position}</p>
+              <p className="text-blue-600 font-medium">{user?.profile?.position || user?.role_display || "User"}</p>
               <div className="flex items-center justify-center md:justify-start gap-2 mt-4">
                 <span className={`inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full ${
                   isDarkMode 
@@ -108,12 +177,27 @@ export default function Profile() {
               </div>
             </div>
             
-            <button className="px-6 py-3 bg-gradient-to-br from-blue-600 to-blue-700 text-white font-semibold rounded-full shadow-md hover:shadow-lg active:scale-95 transition-all flex items-center gap-2">
+            <button 
+              onClick={isEditing ? handleSave : startEditing}
+              disabled={saving}
+              className="px-6 py-3 bg-gradient-to-br from-blue-600 to-blue-700 text-white font-semibold rounded-full shadow-md hover:shadow-lg active:scale-95 transition-all flex items-center gap-2 disabled:opacity-50"
+            >
               <Edit size={16} />
-              Edit Profile
+              {saving ? "Saving…" : isEditing ? "Save Profile" : "Edit Profile"}
             </button>
           </div>
         </section>
+
+        {/* Save/Error Message */}
+        {saveMessage && (
+          <div className={`p-4 rounded-lg text-sm font-medium ${
+            saveMessage.type === "success"
+              ? "bg-green-50 border border-green-300 text-green-700"
+              : "bg-red-50 border border-red-300 text-red-700"
+          }`}>
+            {saveMessage.text}
+          </div>
+        )}
 
         {/* Main Grid Sections */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -139,17 +223,37 @@ export default function Profile() {
                   <label className={`text-sm font-medium ml-1 ${
                     isDarkMode ? 'text-slate-400' : 'text-gray-600'
                   }`}>
-                    Full Name
+                    First Name
                   </label>
                   <input 
                     className={`w-full px-4 py-3 rounded-lg focus:ring-2 focus:ring-blue-600/20 transition-all ${
                       isDarkMode 
                         ? 'bg-slate-700 border border-slate-600 text-white' 
                         : 'bg-white border border-gray-200 text-gray-900'
-                    }`}
+                    } ${!isEditing ? 'opacity-75' : ''}`}
                     type="text" 
-                    value={profileData.name}
-                    readOnly
+                    value={isEditing ? firstName : (user?.first_name || "")}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    readOnly={!isEditing}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <label className={`text-sm font-medium ml-1 ${
+                    isDarkMode ? 'text-slate-400' : 'text-gray-600'
+                  }`}>
+                    Last Name
+                  </label>
+                  <input 
+                    className={`w-full px-4 py-3 rounded-lg focus:ring-2 focus:ring-blue-600/20 transition-all ${
+                      isDarkMode 
+                        ? 'bg-slate-700 border border-slate-600 text-white' 
+                        : 'bg-white border border-gray-200 text-gray-900'
+                    } ${!isEditing ? 'opacity-75' : ''}`}
+                    type="text" 
+                    value={isEditing ? lastName : (user?.last_name || "")}
+                    onChange={(e) => setLastName(e.target.value)}
+                    readOnly={!isEditing}
                   />
                 </div>
                 
@@ -160,13 +264,13 @@ export default function Profile() {
                     Email Address
                   </label>
                   <input 
-                    className={`w-full px-4 py-3 rounded-lg focus:ring-2 focus:ring-blue-600/20 transition-all ${
+                    className={`w-full px-4 py-3 rounded-lg opacity-75 ${
                       isDarkMode 
                         ? 'bg-slate-700 border border-slate-600 text-white' 
                         : 'bg-white border border-gray-200 text-gray-900'
                     }`}
                     type="email" 
-                    value={profileData.email}
+                    value={user?.email || ""}
                     readOnly
                   />
                 </div>
@@ -182,28 +286,49 @@ export default function Profile() {
                       isDarkMode 
                         ? 'bg-slate-700 border border-slate-600 text-white' 
                         : 'bg-white border border-gray-200 text-gray-900'
-                    }`}
+                    } ${!isEditing ? 'opacity-75' : ''}`}
                     type="tel" 
-                    value={profileData.phone}
-                    readOnly
+                    value={isEditing ? phone : (user?.phone_number || "")}
+                    onChange={(e) => setPhone(e.target.value)}
+                    readOnly={!isEditing}
                   />
                 </div>
-                
+
                 <div className="space-y-2">
                   <label className={`text-sm font-medium ml-1 ${
                     isDarkMode ? 'text-slate-400' : 'text-gray-600'
                   }`}>
-                    Company
+                    Organisation
                   </label>
                   <input 
                     className={`w-full px-4 py-3 rounded-lg focus:ring-2 focus:ring-blue-600/20 transition-all ${
                       isDarkMode 
                         ? 'bg-slate-700 border border-slate-600 text-white' 
                         : 'bg-white border border-gray-200 text-gray-900'
-                    }`}
+                    } ${!isEditing ? 'opacity-75' : ''}`}
                     type="text" 
-                    value={profileData.company}
-                    readOnly
+                    value={isEditing ? organisation : (user?.profile?.organisation || "")}
+                    onChange={(e) => setOrganisation(e.target.value)}
+                    readOnly={!isEditing}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className={`text-sm font-medium ml-1 ${
+                    isDarkMode ? 'text-slate-400' : 'text-gray-600'
+                  }`}>
+                    Position
+                  </label>
+                  <input 
+                    className={`w-full px-4 py-3 rounded-lg focus:ring-2 focus:ring-blue-600/20 transition-all ${
+                      isDarkMode 
+                        ? 'bg-slate-700 border border-slate-600 text-white' 
+                        : 'bg-white border border-gray-200 text-gray-900'
+                    } ${!isEditing ? 'opacity-75' : ''}`}
+                    type="text" 
+                    value={isEditing ? position : (user?.profile?.position || "")}
+                    onChange={(e) => setPosition(e.target.value)}
+                    readOnly={!isEditing}
                   />
                 </div>
               </div>
@@ -236,7 +361,7 @@ export default function Profile() {
                   <p className={`text-sm font-semibold ${
                     isDarkMode ? 'text-white' : 'text-gray-900'
                   }`}>
-                    {profileData.role}
+                    {user?.role_display || user?.role || "User"}
                   </p>
                 </div>
                 
@@ -246,12 +371,12 @@ export default function Profile() {
                     : 'bg-white border-l-green-600'
                 }`}>
                   <p className="text-xs font-bold text-green-600 uppercase tracking-wider mb-1">
-                    Jurisdiction
+                    Member Since
                   </p>
                   <p className={`text-sm font-semibold ${
                     isDarkMode ? 'text-white' : 'text-gray-900'
                   }`}>
-                    {profileData.jurisdiction}
+                    {user?.date_joined ? new Date(user.date_joined).toLocaleDateString("en-BW", { year: "numeric", month: "long", day: "numeric" }) : "—"}
                   </p>
                 </div>
               </div>
@@ -314,7 +439,19 @@ export default function Profile() {
               </div>
               
               <div className="space-y-4">
-                <div className={`p-4 rounded-lg cursor-pointer transition-colors ${
+                {passwordMessage && (
+                  <div className={`p-3 rounded-lg text-sm ${
+                    passwordMessage.type === "success"
+                      ? "bg-green-50 border border-green-300 text-green-700"
+                      : "bg-red-50 border border-red-300 text-red-700"
+                  }`}>
+                    {passwordMessage.text}
+                  </div>
+                )}
+
+                <div 
+                  onClick={() => setShowPasswordForm(!showPasswordForm)}
+                  className={`p-4 rounded-lg cursor-pointer transition-colors ${
                   isDarkMode 
                     ? 'bg-slate-700 hover:bg-slate-600' 
                     : 'bg-white hover:bg-gray-50'
@@ -323,45 +460,68 @@ export default function Profile() {
                     <span className={`text-sm font-bold ${
                       isDarkMode ? 'text-white' : 'text-gray-900'
                     }`}>
-                      Password
+                      Change Password
                     </span>
-                    <ChevronRight size={16} className={isDarkMode ? 'text-slate-400' : 'text-gray-400'} />
+                    <ChevronRight size={16} className={`transition-transform ${showPasswordForm ? 'rotate-90' : ''} ${isDarkMode ? 'text-slate-400' : 'text-gray-400'}`} />
                   </div>
                   <p className={`text-xs ${
                     isDarkMode ? 'text-slate-400' : 'text-gray-500'
                   }`}>
-                    Last changed 3 months ago
+                    Update your account password
                   </p>
                 </div>
-                
-                <div className={`p-4 rounded-lg flex items-center justify-between ${
-                  isDarkMode 
-                    ? 'bg-slate-700' 
-                    : 'bg-white'
-                }`}>
-                  <div className="space-y-1">
-                    <span className={`text-sm font-bold ${
-                      isDarkMode ? 'text-white' : 'text-gray-900'
-                    }`}>
-                      2-Factor Auth
-                    </span>
-                    <p className={`text-xs ${
-                      isDarkMode ? 'text-slate-400' : 'text-gray-500'
-                    }`}>
-                      Secure your login
-                    </p>
-                  </div>
-                  <button 
-                    onClick={() => setTwoFactorEnabled(!twoFactorEnabled)}
-                    className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
-                      twoFactorEnabled ? 'bg-blue-600' : 'bg-gray-300'
-                    }`}
-                  >
-                    <span className={`translate-x-5 pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
-                      twoFactorEnabled ? 'translate-x-5' : 'translate-x-0'
-                    }`}></span>
-                  </button>
-                </div>
+
+                {showPasswordForm && (
+                  <form onSubmit={handlePasswordChange} className={`p-4 rounded-lg space-y-3 ${
+                    isDarkMode ? 'bg-slate-700' : 'bg-white'
+                  }`}>
+                    <input
+                      type="password"
+                      placeholder="Current password"
+                      value={currentPassword}
+                      onChange={(e) => setCurrentPassword(e.target.value)}
+                      required
+                      className={`w-full px-3 py-2 rounded-lg text-sm ${
+                        isDarkMode 
+                          ? 'bg-slate-600 border border-slate-500 text-white placeholder-slate-400' 
+                          : 'bg-gray-50 border border-gray-200 text-gray-900'
+                      }`}
+                    />
+                    <input
+                      type="password"
+                      placeholder="New password"
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      required
+                      minLength={8}
+                      className={`w-full px-3 py-2 rounded-lg text-sm ${
+                        isDarkMode 
+                          ? 'bg-slate-600 border border-slate-500 text-white placeholder-slate-400' 
+                          : 'bg-gray-50 border border-gray-200 text-gray-900'
+                      }`}
+                    />
+                    <input
+                      type="password"
+                      placeholder="Confirm new password"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      required
+                      minLength={8}
+                      className={`w-full px-3 py-2 rounded-lg text-sm ${
+                        isDarkMode 
+                          ? 'bg-slate-600 border border-slate-500 text-white placeholder-slate-400' 
+                          : 'bg-gray-50 border border-gray-200 text-gray-900'
+                      }`}
+                    />
+                    <button
+                      type="submit"
+                      disabled={changingPassword}
+                      className="w-full py-2 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors"
+                    >
+                      {changingPassword ? "Changing…" : "Change Password"}
+                    </button>
+                  </form>
+                )}
               </div>
             </section>
 
@@ -460,15 +620,21 @@ export default function Profile() {
           </div>
           
           <div className="flex items-center gap-4">
-            <button className={`px-6 py-2 font-semibold transition-colors rounded-full ${
+            <button 
+              onClick={() => { setIsEditing(false); setSaveMessage(null); }}
+              className={`px-6 py-2 font-semibold transition-colors rounded-full ${
               isDarkMode 
                 ? 'text-slate-400 hover:bg-slate-700' 
                 : 'text-gray-600 hover:bg-gray-100'
             }`}>
               Cancel Changes
             </button>
-            <button className="px-8 py-2 bg-blue-600 text-white font-bold rounded-full shadow-lg shadow-blue-600/20 hover:scale-105 active:scale-95 transition-all">
-              Save Preferences
+            <button 
+              onClick={isEditing ? handleSave : startEditing}
+              disabled={saving}
+              className="px-8 py-2 bg-blue-600 text-white font-bold rounded-full shadow-lg shadow-blue-600/20 hover:scale-105 active:scale-95 transition-all disabled:opacity-50"
+            >
+              {saving ? "Saving…" : isEditing ? "Save Changes" : "Edit Profile"}
             </button>
           </div>
         </footer>

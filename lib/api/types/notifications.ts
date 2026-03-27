@@ -15,7 +15,7 @@ export type Notification = {
 };
 
 export type UnreadCount = {
-  count: number;
+  unread_count: number;
 };
 
 export type NotificationListParams = {

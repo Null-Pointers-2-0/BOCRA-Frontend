@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Input } from "@/components/ui/input";
@@ -22,12 +23,14 @@ import type {
   TenderListItem,
   TenderDetail,
 } from "@/lib/api/types/tenders";
+import { getTokens } from "@/lib/api/client";
 import { config } from "@/lib/config";
 import HeaderSection from "@/components/HeaderSection";
 
 type View = "list" | "detail" | "apply" | "success";
 
 export default function TendersPage() {
+  const router = useRouter();
   const [tenders, setTenders] = useState<TenderListItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -510,6 +513,13 @@ export default function TendersPage() {
             {isOpen && (
               <Button
                 onClick={() => {
+                  const { accessToken } = getTokens();
+                  if (!accessToken) {
+                    router.push(
+                      `/login?redirect=${encodeURIComponent(`/tenders`)}&tenderId=${selectedTender.id}`
+                    );
+                    return;
+                  }
                   resetForm();
                   setView("apply");
                 }}

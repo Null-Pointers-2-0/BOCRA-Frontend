@@ -99,7 +99,7 @@ export default function Signup() {
         <div className="w-full max-w-2xl p-4 bg-green-100 border border-green-400 text-green-700 rounded">
           <p className="font-semibold">Account created successfully!</p>
           <p className="text-sm">
-            Your account has been created. Redirecting to login page...
+            Please check your email to verify your account before logging in.
           </p>
         </div>
       )}

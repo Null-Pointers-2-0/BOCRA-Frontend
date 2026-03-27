@@ -117,6 +117,14 @@ export type ComplaintTrack = {
   resolved_at: string | null;
 };
 
+// ── Submit response (backend returns minimal object) ──
+export type ComplaintSubmitResponse = {
+  id: string;
+  reference_number: string;
+  status: ComplaintStatus;
+  sla_deadline: string | null;
+};
+
 // ── Request types ──
 export type ComplaintCreateRequest = {
   complainant_name: string;

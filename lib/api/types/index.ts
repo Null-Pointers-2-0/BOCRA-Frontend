@@ -11,3 +11,5 @@ export * from "./domains";
 export * from "./coverages";
 export * from "./qoe";
 export * from "./scorecard";
+export * from "./cybersecurity";
+export * from "./alerts";

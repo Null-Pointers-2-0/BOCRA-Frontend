@@ -1,26 +1,36 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { Footer } from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
-import { Spinner } from "@hugeicons/core-free-icons";
-import { InfoIcon, SpinnerBallIcon, SpinnerIcon } from "@phosphor-icons/react";
 import Link from "next/link";
+import { getArticles } from "@/lib/api/clients/news";
+import { getTenders } from "@/lib/api/clients/tenders";
+import type { ArticleListItem } from "@/lib/api/types/news";
+import type { TenderListItem } from "@/lib/api/types/tenders";
 
 export default function Home() {
-  const newsAndEvents = [
-    { title: "PUBLIC NOTICE - BOCRA WEBSITE DEVELOPMENT HACKATHON" },
-    { title: "PRESS RELEASE - BOTSWANA COLLABORATES WITH FIVE SADC MEMBER STATES TO SUBSTANTIALLY REDUCE AND HARMONISE INTERNATIONAL ROAMING TARIFFS", },
-    { title: "MEDIA RELEASE - BOCRA Approves Reduced Data Prices for Botswana Telecommunications Corporation (BTC)", },
-    { title: "PUBLIC NOTICE - EXPRESSION OF INTEREST (EOI) FOR INCLUSION IN THE BOTSWANA COMMUNICATIONS REGULATORY AUTHORITY'S SUPPLIER DATABASE", },
-    { title: "PUBLIC NOTICE - ITA Commercial Broadcasting Radio Station Licence", },
-  ];
+  const [news, setNews] = useState<ArticleListItem[]>([]);
+  const [openTenders, setOpenTenders] = useState<TenderListItem[]>([]);
+  const [loadingNews, setLoadingNews] = useState(true);
+  const [loadingTenders, setLoadingTenders] = useState(true);
 
-  const documentsAndLegislation = [
-    { title: "Media Release" },
-    { title: "Cost Modelling Project Interim report" },
-    { title: "Enforcement Guidelines" },
-    { title: "Understand Broadband Connectivity" },
-  ];
+  useEffect(() => {
+    getArticles({ page: 1 })
+      .then((res) => {
+        if (res.success) {
+          const items = Array.isArray(res.data) ? res.data : res.data?.results ?? [];
+          setNews(items.slice(0, 5));
+        }
+      })
+      .finally(() => setLoadingNews(false));
+
+    getTenders({ status: "OPEN" })
+      .then((res) => {
+        if (res.success) setOpenTenders((res.data ?? []).slice(0, 3));
+      })
+      .finally(() => setLoadingTenders(false));
+  }, []);
 
   const licenses = [
     { title: "Aircraft Radio License", href: "/licenses/aircraft-radio" },
@@ -99,32 +109,48 @@ export default function Home() {
           <div className="h-full w-full flex flex-col justify-between space-y-5">
             <h1 className="text-3xl font-semibold">News & Events</h1>
             <div className="flex flex-col justify-center items-center space-y-5">
-              {newsAndEvents.map((news, index) => (
-                <ol key={index} type="I" className="list-disc list-inside">
-                  <li className="font-semibold">{news.title}</li>
-                </ol>
-              ))}
+              {loadingNews ? (
+                <p className="text-gray-400 text-sm">Loading…</p>
+              ) : news.length > 0 ? (
+                news.map((item) => (
+                  <ol key={item.id} type="I" className="list-disc list-inside">
+                    <li className="font-semibold">
+                      {item.category_display ? `${item.category_display} - ` : ""}
+                      {item.title}
+                    </li>
+                  </ol>
+                ))
+              ) : (
+                <p className="text-gray-500 text-sm">No recent news.</p>
+              )}
             </div>
-            <button className="bg-pink text-white w-full py-2">View All</button>
+            <Link href="/news" className="bg-pink text-white w-full py-2 text-center">
+              View All
+            </Link>
           </div>
           <div className="flex flex-col justify-between h-full w-full space-y-5">
-            <h1 className="text-3xl font-semibold">Documents & Legislation</h1>
+            <h1 className="text-3xl font-semibold">Open Tenders</h1>
             <div className="flex flex-col space-y-5 w-full h-full">
-              <Link
-                href="/popular-documents"
-                className="text-pink underline text-lg"
-              >
-                Popular Documents
-              </Link>
-              {documentsAndLegislation.map((document, index) => (
-                <ol key={index} className="list-disc list-inside">
-                  <li className="font-light">{document.title}</li>
-                </ol>
-              ))}
+              {loadingTenders ? (
+                <p className="text-gray-400 text-sm">Loading…</p>
+              ) : openTenders.length > 0 ? (
+                openTenders.map((tender) => (
+                  <div key={tender.id} className="space-y-1">
+                    <p className="font-semibold">{tender.title}</p>
+                    <p className="text-sm text-gray-500">
+                      Ref: {tender.reference_number}
+                      {tender.closing_date &&
+                        ` · Closes: ${new Date(tender.closing_date).toLocaleDateString()}`}
+                    </p>
+                  </div>
+                ))
+              ) : (
+                <p className="text-gray-500 text-sm">No open tenders at this time.</p>
+              )}
             </div>
-            <button className="bg-pink text-white w-full py-2">
-              View All Documents
-            </button>
+            <Link href="/tenders" className="bg-pink text-white w-full py-2 text-center">
+              View All Tenders
+            </Link>
           </div>
           <div className="h-full w-full flex flex-col space-y-5">
             <h1 className="text-3xl font-semibold">Apply for a License</h1>
@@ -191,9 +217,9 @@ export default function Home() {
               </p>
             </div>
           </main>
-          <button className="px-6 py-2 border border-pink text-pink hover:bg-pink hover:text-white cursor-pointer">
+          <Link href="/file-complaint" className="px-6 py-2 border border-pink text-pink hover:bg-pink hover:text-white cursor-pointer">
             File a complaint
-          </button>
+          </Link>
         </section>
         <Footer />
       </main>

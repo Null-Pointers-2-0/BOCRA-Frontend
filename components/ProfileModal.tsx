@@ -19,6 +19,7 @@ import {
   BellRinging as NotificationsActive,
   CaretRight as ChevronRight
 } from "@phosphor-icons/react";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface ProfileModalProps {
   isOpen: boolean;
@@ -31,19 +32,23 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
   onClose,
   isDarkMode,
 }) => {
+  const { user } = useAuth();
   const [twoFactorEnabled, setTwoFactorEnabled] = React.useState(true);
   const [emailAlerts, setEmailAlerts] = React.useState(true);
   const [smsMessages, setSmsMessages] = React.useState(true);
   const [inAppNotify, setInAppNotify] = React.useState(true);
 
+  const fullName = user ? `${user.first_name} ${user.last_name}`.trim() || user.username : "";
+  const initials = user ? `${user.first_name?.[0] ?? ""}${user.last_name?.[0] ?? ""}`.toUpperCase() || user.username?.[0]?.toUpperCase() || "U" : "U";
+
   const profileData = {
-    name: "Thabo Molapo",
-    email: "thabo.molapo@molapo-logistics.co.bw",
-    phone: "+267 71 234 567",
-    company: "Molapo Logistics Ltd.",
-    position: "Business Administrator",
-    role: "Portal Administrator (Commercial)",
-    jurisdiction: "Cross-border Logistics & Licensing"
+    name: fullName,
+    email: user?.email ?? "",
+    phone: user?.phone_number ?? "",
+    company: user?.profile?.organisation ?? "",
+    position: user?.profile?.position ?? "",
+    role: user?.role_display ?? user?.role ?? "",
+    jurisdiction: ""
   };
 
   if (!isOpen) return null;
@@ -97,7 +102,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
               <div className="relative group">
                 <div className="w-32 h-32 rounded-full overflow-hidden ring-4 ring-blue-600/20">
                   <div className="w-full h-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white text-3xl font-bold">
-                    TM
+                    {initials}
                   </div>
                 </div>
                 <button className="absolute bottom-0 right-0 bg-blue-600 text-white p-2 rounded-full shadow-lg hover:scale-105 transition-transform">

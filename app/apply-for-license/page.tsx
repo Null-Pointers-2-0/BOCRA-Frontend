@@ -1,11 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Footer } from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { getTokens } from "@/lib/api/client";
 import {
   Combobox,
   ComboboxInput,
@@ -26,6 +28,7 @@ import type { LicenceType } from "@/lib/api/types/licensing";
 import type { DomainZone, DomainAvailability } from "@/lib/api/types/domains";
 
 export default function ApplyForLicensePage() {
+  const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
   const [licenceTypes, setLicenceTypes] = useState<LicenceType[]>([]);
   const [loading, setLoading] = useState(true);
@@ -64,7 +67,37 @@ export default function ApplyForLicensePage() {
 
   useEffect(() => {
     getLicenceTypes().then((res) => {
-      if (res.success) setLicenceTypes(res.data);
+      if (res.success) {
+        setLicenceTypes(res.data);
+        // Restore draft if user was redirected back after auth
+        try {
+          const draft = sessionStorage.getItem("apply_licence_draft");
+          if (draft) {
+            const d = JSON.parse(draft);
+            const matchedType = res.data.find((lt: LicenceType) => lt.id === d.selectedTypeId);
+            if (matchedType) {
+              setSelectedType(matchedType);
+              if (d.orgName) setOrgName(d.orgName);
+              if (d.orgReg) setOrgReg(d.orgReg);
+              if (d.contactPerson) setContactPerson(d.contactPerson);
+              if (d.contactEmail) setContactEmail(d.contactEmail);
+              if (d.contactPhone) setContactPhone(d.contactPhone);
+              if (d.description) setDescription(d.description);
+              if (d.domainName) setDomainName(d.domainName);
+              if (d.selectedZone) setSelectedZone(d.selectedZone);
+              if (d.registrantName) setRegistrantName(d.registrantName);
+              if (d.registrantEmail) setRegistrantEmail(d.registrantEmail);
+              if (d.registrantPhone) setRegistrantPhone(d.registrantPhone);
+              if (d.registrantAddress) setRegistrantAddress(d.registrantAddress);
+              if (d.nameserver1) setNameserver1(d.nameserver1);
+              if (d.nameserver2) setNameserver2(d.nameserver2);
+              if (d.regPeriod) setRegPeriod(d.regPeriod);
+              if (d.justification) setJustification(d.justification);
+            }
+            sessionStorage.removeItem("apply_licence_draft");
+          }
+        } catch { /* ignore */ }
+      }
       setLoading(false);
     });
   }, []);
@@ -125,6 +158,23 @@ export default function ApplyForLicensePage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedType) return;
+
+    // Check if user is authenticated before submitting
+    const { accessToken } = getTokens();
+    if (!accessToken) {
+      // Save form draft to sessionStorage so user can resume after auth
+      try {
+        sessionStorage.setItem("apply_licence_draft", JSON.stringify({
+          selectedTypeId: selectedType.id,
+          orgName, orgReg, contactPerson, contactEmail, contactPhone, description,
+          domainName, selectedZone, registrantName, registrantEmail, registrantPhone,
+          registrantAddress, nameserver1, nameserver2, regPeriod, justification,
+        }));
+      } catch { /* ignore storage errors */ }
+      router.push(`/login?redirect=${encodeURIComponent("/apply-for-license")}`);
+      return;
+    }
+
     setSubmitting(true);
     setSubmitError("");
 
@@ -305,11 +355,10 @@ export default function ApplyForLicensePage() {
                     </div>
                     {domainAvailability && (
                       <div
-                        className={`mt-2 p-3 text-sm font-medium ${
-                          domainAvailability.available
+                        className={`mt-2 p-3 text-sm font-medium ${domainAvailability.available
                             ? "bg-green-50 text-green-700 border border-green-300"
                             : "bg-red-50 text-red-700 border border-red-300"
-                        }`}
+                          }`}
                       >
                         {domainAvailability.available ? "\u2713" : "\u2717"}{" "}
                         {domainAvailability.message}

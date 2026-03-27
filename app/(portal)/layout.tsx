@@ -4,17 +4,14 @@ import React, { useState, useEffect } from "react";
 import { PortalSidebar } from "@/components/PortalSidebar";
 import BottomNavigation from "@/components/BottomNavigation";
 import { useTheme } from "@/contexts/ThemeContext";
+import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { usePathname } from "next/navigation";
 
-export default function PortalLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+function PortalContent({ children }: { children: React.ReactNode }) {
   const { isDarkMode } = useTheme();
+  const { isLoading, isAuthenticated } = useAuth();
   const pathname = usePathname();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [isClient, setIsClient] = useState(false);
 
   // Determine active nav based on current path
   const getActiveNav = () => {
@@ -23,6 +20,8 @@ export default function PortalLayout({
     if (pathname?.includes("/complaints")) return "complaints";
     if (pathname?.includes("/licenses")) return "licenses";
     if (pathname?.includes("/licensing")) return "licensing";
+    if (pathname?.includes("/domains")) return "domains";
+    if (pathname?.includes("/alerts")) return "alerts";
     if (pathname?.includes("/notifications")) return "notifications";
     return "overview";
   };
@@ -30,14 +29,10 @@ export default function PortalLayout({
   const [activeNav, setActiveNav] = useState(getActiveNav());
 
   useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  useEffect(() => {
     setActiveNav(getActiveNav());
   }, [pathname]);
 
-  if (!isClient) {
+  if (isLoading || !isAuthenticated) {
     return (
       <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex items-center justify-center">
         <div className="text-slate-600 dark:text-slate-400">Loading...</div>
@@ -69,5 +64,17 @@ export default function PortalLayout({
         <BottomNavigation />
       </div>
     </div>
+  );
+}
+
+export default function PortalLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <AuthProvider>
+      <PortalContent>{children}</PortalContent>
+    </AuthProvider>
   );
 }

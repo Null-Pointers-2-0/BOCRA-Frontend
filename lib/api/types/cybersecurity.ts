@@ -1,0 +1,63 @@
+// -- Cybersecurity Types ------------------------------------------------------
+
+export type AuditType =
+  | "VULNERABILITY_ASSESSMENT"
+  | "PENETRATION_TEST"
+  | "COMPLIANCE_AUDIT"
+  | "INCIDENT_RESPONSE"
+  | "GENERAL";
+
+export type AuditRequestStatus =
+  | "SUBMITTED"
+  | "UNDER_REVIEW"
+  | "SCHEDULED"
+  | "IN_PROGRESS"
+  | "COMPLETED"
+  | "REJECTED";
+
+export type AuditRequestSubmitData = {
+  requester_name: string;
+  requester_email: string;
+  requester_phone?: string;
+  organization: string;
+  audit_type: AuditType;
+  description: string;
+  preferred_date?: string;
+};
+
+export type AuditRequest = {
+  id: string;
+  reference_number: string;
+  requester_name: string;
+  requester_email: string;
+  requester_phone: string;
+  organization: string;
+  audit_type: AuditType;
+  audit_type_display: string;
+  description: string;
+  preferred_date: string | null;
+  status: AuditRequestStatus;
+  status_display: string;
+  assigned_to: string | null;
+  assigned_to_name: string | null;
+  staff_notes: string;
+  resolution: string;
+  completed_at: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type AuditRequestListItem = {
+  id: string;
+  reference_number: string;
+  requester_name: string;
+  requester_email: string;
+  organization: string;
+  audit_type: AuditType;
+  audit_type_display: string;
+  status: AuditRequestStatus;
+  status_display: string;
+  preferred_date: string | null;
+  created_at: string;
+  updated_at: string;
+};
